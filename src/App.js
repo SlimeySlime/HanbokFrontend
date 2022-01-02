@@ -1,25 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+// import './bootstrap/bootstrap.css'
+import React, { Component } from 'react';
+import { BrowserRouter, Link, Routes, Route } from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component {
+  state = {
+    characters : [
+      // {name: 'Charlie', job: 'Backend'} , ...
+    ]
+  }
+
+  render(){
+    const characters = this.state.characters  // this.state 로도 가능한듯?
+    return (
+      <div>
+        <nav className='HeaderContainer' style={
+            {
+              borderBottom:'solid 1px',
+              paddingBottom: '1rem'
+            }
+        }>
+          {/* <Link className='HeaderContainer-Link' to='/Table'>Table</Link> */}
+          <Link className='HeaderContainer-Link' to='/Search'>Search</Link>
+          <Link className='HeaderContainer-Link' to='/Hanbok'>Hanbok</Link>
+          <Link className='HeaderContainer-Link' to='/WeekList'>WeekList</Link>
+        </nav>
+      </div>
+    )
+  }
+
+  
 }
 
 export default App;
+
