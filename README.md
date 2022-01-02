@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Hanbok Fronted with React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+HanbokNode(private)의 프론트엔드를 담당하는 페이지
 
 ## Available Scripts
 

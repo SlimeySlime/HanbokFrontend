@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 const HanbokItem = ({index, item, onView}) => {
 
     const {gs_name, gs_kind, gs_maker, gs_position} = item
+    //
 
     // console.log('item.logs', item)
 
