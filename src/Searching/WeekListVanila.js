@@ -3,6 +3,9 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import style from './WeekList.module.css';
+import Flickity from 'react-flickity-component'
+import {Carousel} from 'react-responsive-carousel'
+import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
 const WeekList = () => {
     
@@ -83,7 +86,7 @@ const WeekList = () => {
                 
             </div>
 
-            <div className='col'> 
+            {/* <div className='col'> 
                 <div className='row'>
                     <div className={style.container} onclick={console.log('A clicked')}>
                         <li>A</li>
@@ -99,7 +102,7 @@ const WeekList = () => {
                             )}
                         </ol>
                     </div>
-                    <div className={style.container} onClick={(e) => {columnSelect(e)}}>
+                    <div className='col' onClick={(e) => {columnSelect(e)}}>
                         <li>C</li>
                         <ol>
                             {weekListItemSorted[2].map((item, index) => 
@@ -107,7 +110,7 @@ const WeekList = () => {
                             )}
                         </ol>
                     </div>
-                    <div className={style.containerSelected} onClick={(e) => {columnSelect(e)}}>
+                    <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>D</li>
                         <ol>
                             {weekListItemSorted[3].map((item, index) => 
@@ -132,10 +135,11 @@ const WeekList = () => {
                         </ol>
                     </div>
                 </div>
-            </div>
-
-
+            </div> */}
+            
+                                
         </div>
+
     )
 }
 

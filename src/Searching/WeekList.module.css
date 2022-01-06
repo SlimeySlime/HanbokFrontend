@@ -1,18 +1,24 @@
-.container {
-    background-color: rgb(74, 199, 157);
-    min-width: 15%;
-    border: 1px solid rgb(139, 132, 132);
-    /* transform: scale(0.7) translate(-50%, -50%); */
+/* external css: flickity.css */
+
+.gallery {
+    background: #EEE;
 }
 
-.containerSelected {
-    background-color: rgb(82, 228, 179);
-    min-width: 10%;
-    border: 1px solid rgb(139, 132, 132);
-    /* width: 20px; */
+.galleryCell {
+    width: 66%;
+    height: 100%;
+    margin-right: 10px;
+    background: rgb(214, 245, 214);
+    counter-increment: gallery-cell;
+    border: 1px solid rgb(250, 209, 209);
 }
 
-.container-main{
-    padding: 50px;
-    margin: 500px;
+/* cell number */
+.galleryCell:before {
+    display: block;
+    text-align: center;
+    content: counter(gallery-cell);
+    line-height: 200px;
+    font-size: 80px;
+    color: white;
 }
