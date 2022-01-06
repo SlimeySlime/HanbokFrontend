@@ -25,6 +25,7 @@ class App extends Component {
           <Link className='HeaderContainer-Link' to='/Search'>Search</Link>
           <Link className='HeaderContainer-Link' to='/Hanbok'>Hanbok</Link>
           <Link className='HeaderContainer-Link' to='/WeekList'>WeekList</Link>
+          <Link className='HeaderContainer-Link' to='/WeekListVanila'>WeekList2</Link>
         </nav>
       </div>
     )

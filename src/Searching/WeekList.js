@@ -4,6 +4,7 @@ import axios from 'axios';
 // import 'react-calendar/dist/Calendar.css';  // ㅡㅡ 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import css from './WeekList.css';
 
 const WeekList = () => {
     
@@ -12,11 +13,6 @@ const WeekList = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [weekListItems, setWeekListItems] = useState([]);
     const [weekListItemSorted, setweekListItemSorted] = useState([[],[],[],[],[],[],[],[0]]);
-
-    const pickDate = (e) => {    
-        console.log('pickDate : ', e)
-
-    }
 
     const search = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
@@ -28,43 +24,38 @@ const WeekList = () => {
                 startDate : startDateStr,
                 endDate: endDateStr
             }
-        })
-        .then((res) => {
+        }).then((res) => {
             console.log(res);
-            res.data.sort( function (a, b){
-                return a.gs_position - b.gs_position;
-            });
+            // res.data.sort( function (a, b){
+            //     return a.gs_name - b.gs_name;
+            // });
             setWeekListItems(res.data);
             let weekListSorted = [[],[],[],[],[],[],[]]         // A B C D E F Length 기타 배열 
             weekListItems.forEach(item => {
                 if (item.gs_position == 'A') {
                     weekListSorted[0].push(item)
-                }else if (item.gs_position == 'B') {
+                }else if (item.gs_position === 'B') {
                     weekListSorted[1].push(item)
-                }else if (item.gs_position == 'C') {
+                }else if (item.gs_position === 'C') {
                     weekListSorted[2].push(item)
-                }else if (item.gs_position == 'D') {
+                }else if (item.gs_position === 'D') {
                     weekListSorted[3].push(item)
-                }else if (item.gs_position == 'E') {
+                }else if (item.gs_position === 'E') {
                     weekListSorted[4].push(item)
-                }else if (item.gs_position == 'F') {
+                }else if (item.gs_position === 'F') {
                     weekListSorted[5].push(item)
                 }else{
                     weekListSorted[6].push(item)
                 }
                 
             });
-            // let longest = 0
-            // weekListSorted.forEach(element => {
-            //     if (element.length > longest) longest = element.length
-            // });
-            // weekListSorted.push(longest)
             setweekListItemSorted(weekListSorted);
-
             console.log('sorted[a] : ',weekListSorted);
-            // 1) 포지션, 택배여부, gs이름이 있는 리스트 만들기 
-            // 2) 
         })
+    }
+
+    const columnSelect = (e) => {
+        console.log('column select ', e);
     }
 
     return(
@@ -92,21 +83,29 @@ const WeekList = () => {
                         <small className='form-text text-muted'>마감 날짜</small>
                     </div>
                     <button className='btn btn-primary' onClick={search}>검색</button>
+                    <div className="dropdown">
+                        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="true">
+                            Dropdown
+                        </button>
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <li><button className="dropdown-item" type="button">Action</button></li>
+                            <li><button className="dropdown-item" type="button">Another action</button></li>
+                            <li><button className="dropdown-item" type="button">Something else here</button></li>
+                        </ul>
+                    </div>
                 </div>
                 
             </div>
 
             <div className='col'> 
                 <div className='row'>
-                    <div className='col'>
+                    <div className='col item-container' onclick={console.log('A clicked')}>
                         <li>A</li>
-                        <ol>
-                            {weekListItemSorted[0].map((item, index) => 
-                                <li>{item.gs_name}</li>
-                            )}
-                        </ol>
+                        {weekListItemSorted[0].map((item, index) => 
+                            <p onclick={console.log('A clicked')}>{item.gs_name}</p>
+                        )}
                     </div>
-                    <div className='col'>
+                    <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>B</li>
                         <ol>    
                             {weekListItemSorted[1].map((item, index) => 
@@ -114,7 +113,7 @@ const WeekList = () => {
                             )}
                         </ol>
                     </div>
-                    <div className='col'>
+                    <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>C</li>
                         <ol>
                             {weekListItemSorted[2].map((item, index) => 
@@ -122,7 +121,7 @@ const WeekList = () => {
                             )}
                         </ol>
                     </div>
-                    <div className='col'>
+                    <div className='col item-container'>
                         <li>D</li>
                         <ol>
                             {weekListItemSorted[3].map((item, index) => 
@@ -130,7 +129,7 @@ const WeekList = () => {
                             )}
                         </ol>
                     </div>
-                    <div className='col'>
+                    <div className='col item-container'>
                         <li>E</li>
                         <ol>
                             {weekListItemSorted[4].map((item, index) => 
@@ -138,7 +137,7 @@ const WeekList = () => {
                             )}
                         </ol>
                     </div>
-                    <div className='col'>
+                    <div className='col item-container'>
                         <li>F</li>
                         <ol>
                             {weekListItemSorted[5].map((item, index) => 

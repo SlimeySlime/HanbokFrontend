@@ -7,6 +7,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Search from './Searching/Search'
 import Hanbok from './Searching/Hanbok'
 import WeekList from './Searching/WeekList';
+import WeekListVanila from './Searching/WeekListVanila';
 import Title from './Title'
 
 ReactDOM.render(
@@ -19,6 +20,7 @@ ReactDOM.render(
         <Route path='/Search' element={ <Search /> }></Route>
         <Route path='/Hanbok' element= { <Hanbok /> }></Route>
         <Route path='/WeekList' element= { <WeekList /> }></Route>
+        <Route path='/WeekListVanila' element= { <WeekListVanila /> }></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
