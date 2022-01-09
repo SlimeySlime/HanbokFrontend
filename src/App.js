@@ -5,14 +5,9 @@ import { BrowserRouter, Link, Routes, Route } from 'react-router-dom'
 
 
 class App extends Component {
-  state = {
-    characters : [
-      // {name: 'Charlie', job: 'Backend'} , ...
-    ]
-  }
 
   render(){
-    const characters = this.state.characters  // this.state 로도 가능한듯?
+    
     return (
       <div>
         <nav className='HeaderContainer' style={
@@ -26,6 +21,18 @@ class App extends Component {
           <Link className='HeaderContainer-Link' to='/Hanbok'>Hanbok</Link>
           <Link className='HeaderContainer-Link' to='/WeekList'>WeekList</Link>
           <Link className='HeaderContainer-Link' to='/WeekListVanila'>WeekList2</Link>
+          {/* <Link className='HeaderContainer-Link' to='/Payment'>Payment</Link> */}
+          <a className='dropdown inline'>
+            <button className='btn btn-secondary dropdown-toggle' type='button' 
+              id='dropdwonMenuLink' data-bs-toggle='dropdown' aria-expanded="false">
+              금전출납
+            </button>
+            <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+              <Link className='HeaderContainer-Link dropdown-item' to='/PaymentSetting'>지출분류관리</Link>
+              <Link className='HeaderContainer-Link dropdown-item' to='/Payment'>경비조회</Link>
+              {/* <a className='dropdown-item' href='/Payment'>경비조회</a> */}
+            </div>
+          </a>
         </nav>
       </div>
     )

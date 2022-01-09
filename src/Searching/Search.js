@@ -7,6 +7,7 @@ const Search = ()  => {
 
     const [keyword, setKeyword] = useState('')
     const [storeItem, setStoreItem] = useState([])
+    const searchPath = process.env.NODE_ENV == 'production' ? '/search' : 'http://localhost:3000/search'
 
     const keywordChange = (e) => {
         console.log('e', e)
@@ -14,10 +15,14 @@ const Search = ()  => {
         setKeyword(e.target.value);
     }
 
+    const pathTest = () => {
+        console.log('search path : ', searchPath);
+        console.log('NODE_ENV : ', process.env.NODE_ENV );
+    }
 
     const search = () => {
         console.log('search', keyword);
-        axios.get(`http://localhost:3000/search/Hanboks`, {      // http://localhost:3000/search/Hanboks -> /search
+        axios.get(searchPath, {      // http://localhost:3000/search/Hanboks -> /search
             params: {
                 category: 'NaverStore',
                 keyword,    // keyword: keyword 같은듯?
@@ -33,6 +38,7 @@ const Search = ()  => {
     return(
         <div className='container-fluid mt-3'>
             <div className='col'>
+                <p>current version : {process.env.REACT_APP_SEARCH_PATH}</p>
                 <form className='form-group'>
                     <label for='keyword'>키워드 (지금은 블로그 검색) </label>
                     <input type='text' name='keyword' className='form-control' onChange={(e) => {keywordChange(e)}}></input>

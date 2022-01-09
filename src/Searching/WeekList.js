@@ -14,17 +14,20 @@ const WeekList = () => {
     const [weekListItems, setWeekListItems] = useState([]);
     const [weekListItemSorted, setweekListItemSorted] = useState([[],[],[],[],[],[],[],[0]]);
 
+    const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
+
     const search = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         // console.log(startDate.toISOString().split('T')[0].replace(/-/gi,''));
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
         // console.log(endDate.toISOString().split('T')[0].replace(/-/gi,''));
-        axios.get('http://localhost:3000/search/naver',{
+        axios.get(searchPath + '/naver', {
             params: {
                 startDate : startDateStr,
                 endDate: endDateStr
             }
         }).then((res) => {
+            
             console.log(res);
             // res.data.sort( function (a, b){
             //     return a.gs_name - b.gs_name;
@@ -32,7 +35,7 @@ const WeekList = () => {
             setWeekListItems(res.data);
             let weekListSorted = [[],[],[],[],[],[],[]]         // A B C D E F Length 기타 배열 
             weekListItems.forEach(item => {
-                if (item.gs_position == 'A') {
+                if (item.gs_position === 'A') {
                     weekListSorted[0].push(item)
                 }else if (item.gs_position === 'B') {
                     weekListSorted[1].push(item)
@@ -59,7 +62,7 @@ const WeekList = () => {
     }
 
     return(
-        <div className='container-fluid p-3 row'>
+        <div className='p-3 mt-2 row'>
             <div className='col-2'>
                 <div className='row'>
                     <div className='form-group col'>
@@ -83,16 +86,7 @@ const WeekList = () => {
                         <small className='form-text text-muted'>마감 날짜</small>
                     </div>
                     <button className='btn btn-primary' onClick={search}>검색</button>
-                    <div className="dropdown">
-                        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="true">
-                            Dropdown
-                        </button>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <li><button className="dropdown-item" type="button">Action</button></li>
-                            <li><button className="dropdown-item" type="button">Another action</button></li>
-                            <li><button className="dropdown-item" type="button">Something else here</button></li>
-                        </ul>
-                    </div>
+
                 </div>
                 
             </div>
@@ -169,20 +163,7 @@ const WeekList = () => {
                             <td>test</td>
                             <td>test</td>
                         </tr>
-                        <tr>
-
-                        </tr>
-                        {/* {[...Array(weekListItemSorted[7])].map((n, index) => 
-                            <tr>
-                                <td>{weekListItemSorted[0][index].gs_name}</td>
-                                <td>{weekListItemSorted[1][index].gs_name}</td>
-                                <td>{weekListItemSorted[2][index].gs_name}</td>
-                                <td>{weekListItemSorted[3][index].gs_name}</td>
-                                <td>{weekListItemSorted[4][index].gs_name}</td>
-                                <td>{weekListItemSorted[5][index].gs_name}</td>
-                                
-                            </tr>
-                        )} */}
+                        
                     </tbody>
                     <ul>
                         {weekListItems.map((item) => 

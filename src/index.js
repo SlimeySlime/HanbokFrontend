@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Search from './Searching/Search'
 import Hanbok from './Searching/Hanbok'
 import WeekList from './Searching/WeekList';
 import WeekListVanila from './Searching/WeekListVanila';
+import Payment from './Searching/Payment/Payment';
+import PaymentSetting from './Searching/Payment/PaymentSetting';
 import Title from './Title'
 
 ReactDOM.render(
@@ -21,6 +24,8 @@ ReactDOM.render(
         <Route path='/Hanbok' element= { <Hanbok /> }></Route>
         <Route path='/WeekList' element= { <WeekList /> }></Route>
         <Route path='/WeekListVanila' element= { <WeekListVanila /> }></Route>
+        <Route path='/Payment' element={<Payment />}></Route>
+        <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

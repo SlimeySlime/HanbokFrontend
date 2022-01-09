@@ -8,11 +8,12 @@ const Hanbok = () => {
     // const [keyword, setKeyword] = useState( ['' , ''] ) 
     const [hanboks, setHanboks] = useState([]);
     const [currentItem, setCurrentItem] = useState({});
+    const searchPath = process.env.NODE_ENV == 'production' ? '/search' : 'http://localhost:3000/search'
 
     const search = () => {
         name.replace(' ', '')
         type.replace(' ', '')
-        axios.get(`http://localhost:3000/search`, {     // http://localhost:3000/search -> /search
+        axios.get(searchPath, {     // http://localhost:3000/search -> /search
             params: {
                 name,
                 type
@@ -28,7 +29,7 @@ const Hanbok = () => {
 
     const posting = (postMethod) => {
         // to axios.post('/Hanboks')
-        axios.post('http://localhost:3000/search', {    // http://localhost:3000/search -> /search
+        axios.post(searchPath, {    // http://localhost:3000/search -> /search
             id : currentItem.gs_Count,
             name : currentItem.gs_name,
             type : currentItem.gs_kind,
@@ -49,7 +50,7 @@ const Hanbok = () => {
 
     useEffect(() => {
 
-    })
+    },[])
 
     const setItem = (keyword, item) => {
         console.log(`item: ${item} , keyword : ${keyword}`);

@@ -15,12 +15,14 @@ const WeekList = () => {
     const [weekListItems, setWeekListItems] = useState([]);
     const [weekListItemSorted, setweekListItemSorted] = useState([[],[],[],[],[],[],[]]);
 
+    const searchPath = process.env.NODE_ENV == 'production' ? '/search' : 'http://localhost:3000/search'
+
     const search = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         // console.log(startDate.toISOString().split('T')[0].replace(/-/gi,''));
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
         // console.log(endDate.toISOString().split('T')[0].replace(/-/gi,''));
-        axios.get('http://localhost:3000/search/naver',{
+        axios.get(searchPath,{
             params: {
                 startDate : startDateStr,
                 endDate: endDateStr
