@@ -7,53 +7,57 @@ import styled from 'styled-components';
 const PaymentSetting = () => {
 
     const [paymentType, setPayemntType] = useState([]);
-    const [paymentData, setpaymentData] = useState([]);
+    const [paymentData, setPaymentData] = useState([]);
     const [selectedData, setSelected] = useState([]);
     const [currentType, setCurrentType] = useState('');
-    const [selectedCell, setSelectedCell] = useState();
+    const [currentData, setCurrentData] = useState('');
 
-    let paymentKey = -1;
+    const [selectedCell, setSelectedCell] = useState();
 
     const paymentPath = process.env.NODE_ENV === 'production'? '/search/payment' : 'http://localhost:3000/search/payment';
 
+    // 처음 불러오기
     useEffect(() => {
         axios.get(paymentPath)
         .then((result) => {
-            // console.log(result.data)    
             setPayemntType(result.data[0]);
-            // console.log(paymentType);
-            setpaymentData(result.data[1]);
-            // console.log(paymentData);
+            setPaymentData(result.data[1]);
         })
     }, [])
 
+    // 계정과목 onClick 
     const selectType = (selectedItem) => {
-        console.log(selectedItem)
         setCurrentType(selectedItem)
         let selected = paymentData.filter((item) => 
             item.sj_mainCount === selectedItem.sj_count
         )
         setSelected(selected)
-
         // selectedCell()   // TODO - cell onclick css
     }
-    // value change를 위해서 onChange가 동반
+    // 과목 onChange
     const setType = (name) => {
         setCurrentType({
             sj_count : currentType.sj_count,
             sj_gubun : name
         })
+        setCurrentData('');
     }
-
+    // 계정명 change
+    const setTypeData = (name) => {
+        // sj_count, sj_mainCount, sj_name
+        setCurrentData({
+            sj_count : currentData.sj_count,
+            sj_name : name
+        })
+    }
+    // 계정분류 post
     const typeUpdate = (keyword) => {
         if (keyword === 'Delete') {
             if (!window.confirm(`${currentType.sj_gubun}을(를) 삭제하시겠습니까?`)){        // delete confirm window 
                 return  
             }
         }
-
-        console.log('type ', keyword)
-        axios.post(paymentPath, {
+        axios.post(paymentPath + '/type', {
             method: keyword,
             id: currentType.sj_count,
             name: currentType.sj_gubun
@@ -64,8 +68,30 @@ const PaymentSetting = () => {
             if (keyword === 'Delete') setCurrentType('');
         })
     }
-    const changeType = (e) => {
-        console.log(e);
+    // 계정명 post
+    const typeDataUpdate = (keyword) => {
+        if (keyword === 'Delete') {
+            if (!window.confirm(`${currentData.sj_name}을(를) 삭제하시겠습니까?`)){        // delete confirm window 
+                return  
+            }
+        }
+
+        axios.post(paymentPath + '/name', {
+            method: keyword,
+            mainId: currentType.sj_count,
+            id: currentData.sj_count,
+            name: currentData.sj_name
+        })
+        .then((result) => {
+            console.log('res result.data', result.data)
+            setPaymentData(result.data)
+            if (keyword === 'Delete') setCurrentType('');
+
+            // let selected = paymentData.filter((item) => 
+            //     item.sj_mainCount === currentType.sj_count
+            // )
+            // setSelected(selected)
+        })
     }
 
     return(
@@ -88,7 +114,7 @@ const PaymentSetting = () => {
                     </thead>
                     <tbody>
                         {paymentType.map((item, index) => 
-                        <tr key={item.sj_count} onClick={() => selectType(item)}>
+                        <tr key={item.sj_count} onClick={() => {selectType(item)}}>
                             <td className="col-1 pl-3">{index+1}.</td>
                             <td>{item.sj_gubun}</td>
                         </tr>)}
@@ -97,13 +123,14 @@ const PaymentSetting = () => {
                 </table>    
             </div>
             <div className="col">
-                <form className="form-inline m-3">
+                <div className="row m-3">
                     <small id='GoodsNameHelp' className='form-text mr-3' >계정명</small>
-                    <input className="form-control" for="PaymentType"></input>
-                    <button className="btn btn-primary ml-2">추가</button>
-                    <button className="btn btn-info ml-2">수정</button>
-                    <button className="btn btn-info ml-2">삭제</button>
-                </form>
+                    <input className="form-control-inline" for="PaymentType" placeholder="계정과목"
+                     value={currentData.sj_name} onChange={(e) => {setTypeData(e.target.value)}}></input>
+                    <button className="btn btn-primary ml-2" onClick={() => typeDataUpdate("Add")}>추가</button>
+                    <button className="btn btn-info ml-2"  onClick={() => typeDataUpdate("Update")}>수정</button>
+                    <button className="btn btn-info ml-2"  onClick={() => typeDataUpdate("Delete")}>삭제</button>
+                </div>
                 <table class='table table-sm table-striped'>
                     <thead>
                         <tr>
@@ -112,11 +139,12 @@ const PaymentSetting = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {selectedData.map((item, index) => 
-                        <tr>
+                        {paymentData.map((item, index) => 
+                        item.sj_mainCount === currentType.sj_count ?
+                        <tr onClick={() => setCurrentData(item)}>
                             <td className="col-1 pl-3">{index+1}.</td>
                             <td> {item.sj_name}</td>
-                        </tr>)}
+                        </tr> : '')}
                         
                     </tbody>
                 </table>    
