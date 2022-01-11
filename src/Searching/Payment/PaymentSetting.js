@@ -12,7 +12,7 @@ const PaymentSetting = () => {
     const [currentType, setCurrentType] = useState('');
     const [currentData, setCurrentData] = useState('');
 
-    const [selectedCell, setSelectedCell] = useState();
+    const [selectedCell, setSelectedCell] = useState(); // ToDo - for animation
 
     const paymentPath = process.env.NODE_ENV === 'production'? '/search/payment' : 'http://localhost:3000/search/payment';
 
@@ -32,6 +32,9 @@ const PaymentSetting = () => {
             item.sj_mainCount === selectedItem.sj_count
         )
         setSelected(selected)
+
+        console.log('selected', selected);
+        console.log('selectedData', selectedData);
         // selectedCell()   // TODO - cell onclick css
     }
     // 과목 onChange
@@ -41,14 +44,6 @@ const PaymentSetting = () => {
             sj_gubun : name
         })
         setCurrentData('');
-    }
-    // 계정명 change
-    const setTypeData = (name) => {
-        // sj_count, sj_mainCount, sj_name
-        setCurrentData({
-            sj_count : currentData.sj_count,
-            sj_name : name
-        })
     }
     // 계정분류 post
     const typeUpdate = (keyword) => {
@@ -68,6 +63,14 @@ const PaymentSetting = () => {
             if (keyword === 'Delete') setCurrentType('');
         })
     }
+    // 계정명 change
+    const setTypeData = (name) => {
+        // sj_count, sj_mainCount, sj_name
+        setCurrentData({
+            sj_count : currentData.sj_count,
+            sj_name : name
+        })
+    }
     // 계정명 post
     const typeDataUpdate = (keyword) => {
         if (keyword === 'Delete') {
@@ -75,7 +78,6 @@ const PaymentSetting = () => {
                 return  
             }
         }
-
         axios.post(paymentPath + '/name', {
             method: keyword,
             mainId: currentType.sj_count,
@@ -83,14 +85,16 @@ const PaymentSetting = () => {
             name: currentData.sj_name
         })
         .then((result) => {
-            console.log('res result.data', result.data)
+            if (keyword === 'Delete') setCurrentData('');
+            // console.log('res result.data', result.data)
             setPaymentData(result.data)
-            if (keyword === 'Delete') setCurrentType('');
 
-            // let selected = paymentData.filter((item) => 
-            //     item.sj_mainCount === currentType.sj_count
-            // )
-            // setSelected(selected)
+            let selected = paymentData.filter((item) => 
+                item.sj_mainCount === currentType.sj_count
+            )
+            setSelected(selected)
+            console.log('selected', selected);
+            console.log('selectedData', selectedData);
         })
     }
 
@@ -139,11 +143,17 @@ const PaymentSetting = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* {selectedData.map((item,index) => 
+                            <tr key={item.sj_count} onClick={() => setCurrentData(item)}>
+                                <td className="col-1 pl-3">{index+1}</td>
+                                <td> {item.sj_name}</td>
+                            </tr>
+                        )} */}
                         {paymentData.map((item, index) => 
                         item.sj_mainCount === currentType.sj_count ?
-                        <tr onClick={() => setCurrentData(item)}>
-                            <td className="col-1 pl-3">{index+1}.</td>
-                            <td> {item.sj_name}</td>
+                        <tr key={item.sj_count} onClick={() => setCurrentData(item)}>
+                            <td className="col-1 pl-3">*</td>
+                            <td> {item.sj_name} </td>
                         </tr> : '')}
                         
                     </tbody>

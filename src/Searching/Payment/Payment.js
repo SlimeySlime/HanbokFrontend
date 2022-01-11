@@ -26,21 +26,12 @@ const Payment = () => {
     useEffect(() => {
         const startDateStr = new Date().toISOString().split('T')[0].replace(/-/gi,'');
         const endDateStr = new Date().toISOString().split('T')[0].replace(/-/gi,'');
-        axios.get(searchPath, {
-            params: {
-                startDate: startDateStr,
-                endDate: endDateStr,
-            }
-        })
-        .then((result) => {
-            // console.log(result);
-            setPaymentList(result.data);
-            // console.log('paymentList', paymentList);
-        })
+        getPaymentList();   // 중복코드를 메소드로
+
         // 자동완성에 사용할 type, name 리스트
         axios.get(paymentPath)
         .then((result) => {
-            console.log('type result, ', result.data[0]);
+            // console.log('type result, ', result.data[0]);
             // setPaymentType(result.data[0]);
             setPaymentType(result.data[0].map(value => ({...value, label : value.sj_gubun, id : value.sj_count})));
             // setPaymentName(result.data[1]);
@@ -62,9 +53,9 @@ const Payment = () => {
             }
         })
         .then((result) => {
-            console.log(result);
+            // console.log(result);
             setPaymentList(result.data);
-            console.log('paymentList', paymentList);
+            // console.log('paymentList', paymentList);
         })
     }   
     // handmade autoComplete
