@@ -12,12 +12,14 @@ import WeekListVanila from './Searching/WeekListVanila';
 import Payment from './Searching/Payment/Payment';
 import PaymentSetting from './Searching/Payment/PaymentSetting';
 import Title from './Title'
+import Search2 from './Searching/Search2';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Title />
       <App />
+      
       <Routes>
         <Route path='/' element={ <Search /> }></Route>
         <Route path='/Search' element={ <Search /> }></Route>
@@ -26,6 +28,8 @@ ReactDOM.render(
         <Route path='/WeekListVanila' element= { <WeekListVanila /> }></Route>
         <Route path='/Payment' element={<Payment />}></Route>
         <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
+        <Route path='/search2' element={<Search2 />}></Route>
+        
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
