@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 
 
 const Payment = () => {
-    const now = new Date();
+    
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [paymentList, setPaymentList] = useState([]);
@@ -24,9 +24,14 @@ const Payment = () => {
     const searchPath = process.env.NODE_ENV === 'production' ? '/search/paymentList' : 'http://localhost:3000/search/paymentList';
 
     useEffect(() => {
-        const startDateStr = new Date().toISOString().split('T')[0].replace(/-/gi,'');
+        const now = new Date();
+        const firstDay = new Date(now.setDate(now.getDate() - now.getDate() + 1));
+        const startDateStr = firstDay.toISOString().split('T')[0].replace(/-/gi,'');
+        setStartDate(firstDay);
         const endDateStr = new Date().toISOString().split('T')[0].replace(/-/gi,'');
-        getPaymentList();   // 중복코드를 메소드로
+        setEndDate(new Date());
+
+        getPaymentList(startDateStr, endDateStr);   // 중복코드를 메소드로
 
         // 자동완성에 사용할 type, name 리스트
         axios.get(paymentPath)
@@ -39,14 +44,16 @@ const Payment = () => {
         })
     },[])
 
-    const getPaymentList = () => {
+    const getPaymentList = (start, end) => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
-        console.log(` searching ${startDateStr} ~ ${endDateStr} -> ${searchKeywords.payType}, ${searchKeywords.payName} ,${searchKeywords.payInfo}`);
+        // console.log(` searching ${startDateStr} ~ ${endDateStr} -> ${searchKeywords.payType}, ${searchKeywords.payName} ,${searchKeywords.payInfo}`);
         axios.get(searchPath, {
             params: {
-                startDate: startDateStr,
-                endDate: endDateStr,
+                // startDate: startDateStr,
+                // endDate: endDateStr,
+                startDate: start != null ? start : startDateStr,
+                endDate: end != null ? end : endDateStr,
                 payType: searchKeywords.payType === null ? '' : searchKeywords.payType,
                 payName: searchKeywords.payName === null ? '' : searchKeywords.payName,
                 payInfo: searchKeywords.payInfo === null ? '' : searchKeywords.payInfo

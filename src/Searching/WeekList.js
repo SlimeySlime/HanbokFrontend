@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 // import Calendar from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';  // ㅡㅡ 
@@ -16,7 +16,12 @@ const WeekList = () => {
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
-    const search = () => {
+
+    useEffect(() => {
+
+    }, [])
+
+    const searchWeek = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         // console.log(startDate.toISOString().split('T')[0].replace(/-/gi,''));
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
@@ -61,6 +66,10 @@ const WeekList = () => {
         console.log('column select ', e);
     }
 
+    const changeWeek = (keyword) => {
+        console.log(keyword)
+    }
+
     return(
         <div className='p-3 mt-2 row'>
             <div className='col-2'>
@@ -85,7 +94,9 @@ const WeekList = () => {
                         />
                         <small className='form-text text-muted'>마감 날짜</small>
                     </div>
-                    <button className='btn btn-primary' onClick={search}>검색</button>
+                    <button className='btn btn-primary m-2'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
+                    <button className='btn btn-primary m-2' onClick={() => {changeWeek('Next')}}>다음주 </button>
+                    <button className='btn btn-primary m-2' onClick={() => searchWeek()}>검색</button>
 
                 </div>
                 
@@ -95,23 +106,32 @@ const WeekList = () => {
                 <div className='row'>
                     <div className='col item-container' onclick={console.log('A clicked')}>
                         <li>A</li>
-                        {weekListItemSorted[0].map((item, index) => 
+                        {/* {weekListItemSorted[0].map((item, index) => 
                             <p onclick={console.log('A clicked')}>{item.gs_name}</p>
+                        )} */}
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'A'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
                         )}
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>B</li>
                         <ol>    
-                            {weekListItemSorted[1].map((item, index) => 
-                                <li>{item.gs_name}</li>
+                            {weekListItems.filter((item, index) => 
+                                item.gs_position === 'B'
+                            ).map((item, index) => 
+                                <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
                             )}
                         </ol>
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>C</li>
                         <ol>
-                            {weekListItemSorted[2].map((item, index) => 
-                                <li>{item.gs_name}</li>
+                            {weekListItems.filter((item, index) => 
+                                item.gs_position === 'C'
+                            ).map((item, index) => 
+                                <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
                             )}
                         </ol>
                     </div>
@@ -140,37 +160,6 @@ const WeekList = () => {
                         </ol>
                     </div>
                 </div>
-            </div>
-            
-            <div className='col' hidden='true'>
-                <table class='table table-bordered'>
-                    <thead>
-                        <tr>
-                            <th scope='row'>A</th>
-                            <th scope='row'>B</th>
-                            <th scope='row'>C</th>
-                            <th scope='row'>D</th>
-                            <th scope='row'>E</th>
-                            <th scope='row'>F</th>
-                            <th scope='row'>기타</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
-                            <td>test</td>
-                        </tr>
-                        
-                    </tbody>
-                    <ul>
-                        {weekListItems.map((item) => 
-                            <li>{item.gs_name} / {item.gs_position} / {item.gs_barcode} </li>
-                        )}
-                    </ul>
-                </table>
             </div>
 
             
