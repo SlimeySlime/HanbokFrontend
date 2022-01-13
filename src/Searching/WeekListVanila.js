@@ -4,8 +4,6 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import style from './WeekList.module.css';
 import Flickity from 'react-flickity-component'
-import {Carousel} from 'react-responsive-carousel'
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
 const WeekList = () => {
     

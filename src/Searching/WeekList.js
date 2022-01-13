@@ -4,7 +4,7 @@ import axios from 'axios';
 // import 'react-calendar/dist/Calendar.css';  // ㅡㅡ 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import css from './WeekList.css';
+import style from './WeekList.module.css';
 
 const WeekList = () => {
     
@@ -57,9 +57,12 @@ const WeekList = () => {
             setStartDate(new Date(startDate.setDate(startDate.getDate() + 7)));
             setEndDate(new Date(endDate.setDate(endDate.getDate() + 7)));
         }
-
-        // Todo
     }
+
+    // [startDate, endDate] 가 변경되면 searchWeek() 호출;
+    useEffect(() => {
+        searchWeek();
+    }, [startDate, endDate]);
 
     return(
         <div className='p-3 mt-2 row'>
@@ -68,7 +71,7 @@ const WeekList = () => {
                     <div className='form-group col'>
                         <DatePicker
                             selected={startDate}
-                            onChange={(e) => {setStartDate(e, searchWeek())}}
+                            onChange={(e) => {setStartDate(e)}}
                             selectsStart={endDate}
                             startDate={startDate}
                             endDate={endDate}
@@ -78,7 +81,7 @@ const WeekList = () => {
                     <div className='form-group col'>
                         <DatePicker
                             selected={endDate}
-                            onChange={(e) => {setEndDate(e, searchWeek())}}
+                            onChange={(e) => {setEndDate(e)}}
                             selectsEnd={endDate}
                             startDate={startDate}
                             endDate={endDate}
@@ -87,19 +90,27 @@ const WeekList = () => {
                     </div>
                     <button className='btn btn-primary m-2'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
                     <button className='btn btn-primary m-2' onClick={() => {changeWeek('Next')}}>다음주 </button>
-                    <button className='btn btn-primary m-2' onClick={() => searchWeek()}>검색</button>
+                    {/* <button className='btn btn-primary m-2' onClick={() => searchWeek()}>검색</button> */}
 
                 </div>
-                
             </div>
-
+            <div className='col'>
+                <div className="gallery js-flickity" visibility='hidden'
+                    data-flickity-options='{ "wrapAround": false }'>
+                    <div className={style.galleryCell}>1</div>
+                    <div className={style.galleryCell}>2</div>
+                    <div className={style.galleryCell}>3</div>
+                    <div className={style.galleryCell}>4</div>
+                    <div className={style.galleryCell}>5</div>
+                </div>
+            </div>
             <div className='col'> 
                 <div className='row'>
                     <div className='col item-container' onclick={console.log('A clicked')}>
                         <li>A</li>
                         {/* {weekListItemSorted[0].map((item, index) => 
                             <p onclick={console.log('A clicked')}>{item.gs_name}</p>
-                            e.g ) http://210.114.10.11/Hanbok/담채/저고리/연두당의.jpg
+                            
                         )} */}
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'A'
@@ -109,10 +120,15 @@ const WeekList = () => {
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>B</li> 
+                        {/* e.g ) http://210.114.10.11/Hanbok/담채/저고리/연두당의.jpg */}
                         {weekListItems.filter((item) => 
                             item.gs_position === 'B'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                            
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                                {item.gs_name}
+                                {/* <img src='http://210.114.10.11/Hanbok/담채/저고리/연두당의.jpg'></img> */}
+                            </p>
                         )}
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
