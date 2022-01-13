@@ -8,57 +8,39 @@ import css from './WeekList.css';
 
 const WeekList = () => {
     
-    const [week, setWeek] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [weekListItems, setWeekListItems] = useState([]);
-    const [weekListItemSorted, setweekListItemSorted] = useState([[],[],[],[],[],[],[],[0]]);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
-
     useEffect(() => {
+        const now = new Date();
+        const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
+        const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+        setStartDate(weekStart);
+        // console.log('weekStart', weekStart)
 
+        const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
+        setEndDate(weekEnd);
+        // console.log('weekEnd', weekEnd);
+
+        searchWeek(weekStart, weekEnd);
     }, [])
 
     const searchWeek = () => {
+
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
-        // console.log(startDate.toISOString().split('T')[0].replace(/-/gi,''));
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
-        // console.log(endDate.toISOString().split('T')[0].replace(/-/gi,''));
+        console.log(`searching ${startDateStr} ~ ${endDateStr}`);
+
         axios.get(searchPath + '/naver', {
             params: {
                 startDate : startDateStr,
                 endDate: endDateStr
             }
         }).then((res) => {
-            
-            console.log(res);
-            // res.data.sort( function (a, b){
-            //     return a.gs_name - b.gs_name;
-            // });
             setWeekListItems(res.data);
-            let weekListSorted = [[],[],[],[],[],[],[]]         // A B C D E F Length 기타 배열 
-            weekListItems.forEach(item => {
-                if (item.gs_position === 'A') {
-                    weekListSorted[0].push(item)
-                }else if (item.gs_position === 'B') {
-                    weekListSorted[1].push(item)
-                }else if (item.gs_position === 'C') {
-                    weekListSorted[2].push(item)
-                }else if (item.gs_position === 'D') {
-                    weekListSorted[3].push(item)
-                }else if (item.gs_position === 'E') {
-                    weekListSorted[4].push(item)
-                }else if (item.gs_position === 'F') {
-                    weekListSorted[5].push(item)
-                }else{
-                    weekListSorted[6].push(item)
-                }
-                
-            });
-            setweekListItemSorted(weekListSorted);
-            console.log('sorted[a] : ',weekListSorted);
         })
     }
 
@@ -67,7 +49,16 @@ const WeekList = () => {
     }
 
     const changeWeek = (keyword) => {
-        console.log(keyword)
+        // Prev , Next
+        if (keyword === 'Prev') {
+            setStartDate(new Date(startDate.setDate(startDate.getDate() - 7)));
+            setEndDate(new Date(endDate.setDate(endDate.getDate() - 7)));
+        }else if (keyword === 'Next') {
+            setStartDate(new Date(startDate.setDate(startDate.getDate() + 7)));
+            setEndDate(new Date(endDate.setDate(endDate.getDate() + 7)));
+        }
+
+        // Todo
     }
 
     return(
@@ -77,7 +68,7 @@ const WeekList = () => {
                     <div className='form-group col'>
                         <DatePicker
                             selected={startDate}
-                            onChange={(e) => {setStartDate(e)}}
+                            onChange={(e) => {setStartDate(e, searchWeek())}}
                             selectsStart={endDate}
                             startDate={startDate}
                             endDate={endDate}
@@ -87,7 +78,7 @@ const WeekList = () => {
                     <div className='form-group col'>
                         <DatePicker
                             selected={endDate}
-                            onChange={(e) => {setEndDate(e)}}
+                            onChange={(e) => {setEndDate(e, searchWeek())}}
                             selectsEnd={endDate}
                             startDate={startDate}
                             endDate={endDate}
@@ -108,6 +99,7 @@ const WeekList = () => {
                         <li>A</li>
                         {/* {weekListItemSorted[0].map((item, index) => 
                             <p onclick={console.log('A clicked')}>{item.gs_name}</p>
+                            e.g ) http://210.114.10.11/Hanbok/담채/저고리/연두당의.jpg
                         )} */}
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'A'
@@ -116,48 +108,44 @@ const WeekList = () => {
                         )}
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
-                        <li>B</li>
-                        <ol>    
-                            {weekListItems.filter((item, index) => 
-                                item.gs_position === 'B'
-                            ).map((item, index) => 
-                                <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                            )}
-                        </ol>
+                        <li>B</li> 
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'B'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>C</li>
-                        <ol>
-                            {weekListItems.filter((item, index) => 
-                                item.gs_position === 'C'
-                            ).map((item, index) => 
-                                <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                            )}
-                        </ol>
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'C'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
                     </div>
                     <div className='col item-container'>
                         <li>D</li>
-                        <ol>
-                            {weekListItemSorted[3].map((item, index) => 
-                                <li>{item.gs_name}</li>
-                            )}
-                        </ol>
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'D'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
                     </div>
                     <div className='col item-container'>
                         <li>E</li>
-                        <ol>
-                            {weekListItemSorted[4].map((item, index) => 
-                                <li>{item.gs_name}</li>
-                            )}
-                        </ol>
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'E'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
                     </div>
                     <div className='col item-container'>
                         <li>F</li>
-                        <ol>
-                            {weekListItemSorted[5].map((item, index) => 
-                                <li>{item.gs_name}</li>
-                            )}
-                        </ol>
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'F'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
                     </div>
                 </div>
             </div>
