@@ -4,7 +4,9 @@ import axios from 'axios';
 // import 'react-calendar/dist/Calendar.css';  // ㅡㅡ 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import style from './WeekList.module.css';
+// import style from './WeekList.module.css';
+import Flickity from 'react-flickity-component';
+import styled from 'styled-components';
 
 const WeekList = () => {
     
@@ -94,16 +96,7 @@ const WeekList = () => {
 
                 </div>
             </div>
-            <div className='col'>
-                <div className="gallery js-flickity" visibility='hidden'
-                    data-flickity-options='{ "wrapAround": false }'>
-                    <div className={style.galleryCell}>1</div>
-                    <div className={style.galleryCell}>2</div>
-                    <div className={style.galleryCell}>3</div>
-                    <div className={style.galleryCell}>4</div>
-                    <div className={style.galleryCell}>5</div>
-                </div>
-            </div>
+            
             <div className='col'> 
                 <div className='row'>
                     <div className='col item-container' onclick={console.log('A clicked')}>
@@ -136,7 +129,7 @@ const WeekList = () => {
                         {weekListItems.filter((item) => 
                             item.gs_position === 'C'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                            <WeekItem onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</WeekItem>
                         )}
                     </div>
                     <div className='col item-container'>
@@ -171,4 +164,9 @@ const WeekList = () => {
     )
 }
 
+const WeekItem = styled.p `
+    /* background-color: #464646;
+    color: #d8d8d8; */
+    color : ${(props) => props.color || "black"} ;
+`
 export default WeekList;
