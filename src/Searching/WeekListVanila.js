@@ -2,22 +2,26 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import style from './WeekList.module.css';
-import Flickity from 'react-flickity-component'
+import styled from './WeekList.module.css';
 
 const WeekList = () => {
     
-
     const searchPath = process.env.NODE_ENV == 'production' ? '/search' : 'http://localhost:3000/search'
 
-
     return(
-        <div className='container-fluid'>
+        <div>
             testing ground
-                                
+            {/* <ModalOveray>
+            testing modal
+            </ModalOveray> */}
         </div>
+        
 
     )
 }
+
+// const ModalOveray = styled.div `
+//     box-sizing: border-box;
+// `
 
 export default WeekList;

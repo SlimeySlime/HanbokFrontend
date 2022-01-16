@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-// import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';  // ㅡㅡ 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 // import style from './WeekList.module.css';
-import Flickity from 'react-flickity-component';
+// import Flickity from 'react-flickity-component';
 import styled from 'styled-components';
 
 const WeekList = () => {
@@ -21,13 +19,10 @@ const WeekList = () => {
         const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
         const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
         setStartDate(weekStart);
-        // console.log('weekStart', weekStart)
-
         const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
         setEndDate(weekEnd);
-        // console.log('weekEnd', weekEnd);
-
-        searchWeek(weekStart, weekEnd);
+ 
+        // searchWeek(weekStart, weekEnd); -> useEffect(() => , [setStartDate, setEndDate])
     }, [])
 
     const searchWeek = () => {
@@ -59,6 +54,7 @@ const WeekList = () => {
             setStartDate(new Date(startDate.setDate(startDate.getDate() + 7)));
             setEndDate(new Date(endDate.setDate(endDate.getDate() + 7)));
         }
+        // ToDo - 현재에서 -+7이 아니라, 무조건 7일되도록
     }
 
     // [startDate, endDate] 가 변경되면 searchWeek() 호출;
@@ -113,7 +109,6 @@ const WeekList = () => {
                     </div>
                     <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
                         <li>B</li> 
-                        {/* e.g ) http://210.114.10.11/Hanbok/담채/저고리/연두당의.jpg */}
                         {weekListItems.filter((item) => 
                             item.gs_position === 'B'
                         ).map((item, index) => 

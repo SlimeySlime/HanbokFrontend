@@ -7,12 +7,39 @@ const Hanbok = () => {
     const [type, setType] = useState('')
     // const [keyword, setKeyword] = useState( ['' , ''] ) 
     const [hanboks, setHanboks] = useState([]);
+    const [searchList, setSearchList] = useState([]);
+
     const [currentItem, setCurrentItem] = useState({});
     const searchPath = process.env.NODE_ENV == 'production' ? '/search' : 'http://localhost:3000/search'
 
+    useEffect(() => {
+        // searchAll
+        axios.get(searchPath)
+        .then((result) =>{
+            setHanboks(result.data);
+            setSearchList(result.data);
+        })
+        // .then((result) => {
+        //     // console.log('axios done');
+        //     // console.log('hanboks', hanboks)
+        //     setHanboks(result.data);
+        //     setSearchList(result.data);
+        // })
+    },[])
+
+    const search2 = () => {
+        const nameReg = new RegExp(`${name}`, 'gi');
+        let searched = hanboks.filter(item => nameReg.test(item.gs_name));
+        const typeReg = new RegExp(`${type}`, 'gi');
+        searched = searched.filter(item => typeReg.test(item.gs_kind));
+        setSearchList(searched);
+    }
+
     const search = () => {
-        name.replace(' ', '')
-        type.replace(' ', '')
+        // name.replace(' ', '')
+        // type.replace(' ', '')
+        name.trim()
+        type.trim()
         axios.get(searchPath, {     // http://localhost:3000/search -> /search
             params: {
                 name,
@@ -28,7 +55,7 @@ const Hanbok = () => {
     }
 
     const posting = (postMethod) => {
-        // to axios.post('/Hanboks')
+
         axios.post(searchPath, {    // http://localhost:3000/search -> /search
             id : currentItem.gs_Count,
             name : currentItem.gs_name,
@@ -48,13 +75,9 @@ const Hanbok = () => {
         })
     }
 
-    useEffect(() => {
-
-    },[])
 
     const setItem = (keyword, item) => {
-        console.log(`item: ${item} , keyword : ${keyword}`);
-
+        // console.log(`item: ${item} , keyword : ${keyword}`);
         if (keyword === 'gs_maker') {
             setCurrentItem({...currentItem,
                 gs_maker : item
@@ -76,20 +99,59 @@ const Hanbok = () => {
                 gs_barcode : item
             })
         }
-        // console.log(currentItem);
     }
 
+    // row onClick 
     const onView = (item) => {
         console.log(item);
         setCurrentItem(item);   // Todo - item 바로 다 넣지 말고, 필요한것만
     }
 
-    const onSort = (keyword) => {
-        console.log(keyword)
+    // 
+    const onSort = (e) => {
+        // console.log('sorting', keyword)
+        console.log('sorting', e.target.id);
+        let sorted = [...searchList]
+        if (e.target.id === 'maker') {
+            sorted.sort((a, b) =>{
+                if (a.gs_maker < b.gs_maker) {
+                    return -1
+                }else if (a.gs_maker > b.gs_maker) {
+                    return 1
+                }else{
+                    return 0;
+                }
+            });
+        }else if (e.target.id === 'name') {
+            sorted.sort((a, b) => {
+                return a.gs_name.localeCompare(b.gs_name);  // 될까?
+            });
+        }else if (e.target.id === 'type') {
+            sorted.sort((a, b) =>{
+                if (a.gs_kind < b.gs_kind) {
+                    return -1
+                }else if (a.gs_kind > b.gs_kind) {
+                    return 1
+                }else{
+                    return 0;
+                }
+            });
+        }else if (e.target.id === 'position') {
+            sorted.sort((a, b) => a.gs_position.localeCompare(b.gs_position));
+        }
+        setSearchList(sorted);
+        // console.log(sorted);
+        console.log(searchList);
+    }
 
-        setHanboks(hanboks.sort((a, b) =>{
-            return a.gs_name - b.gs_name;
-        }));
+    // useEffect(() => {
+    //     search2();
+    // }, [name, type])
+
+    const enterSearch = (e) => {
+        if (e.key === 'Enter') {
+            search2()
+        }
     }
 
     return (
@@ -102,7 +164,8 @@ const Hanbok = () => {
                 <div className='form-group col'>
                     <label htmlFor='GoodsName'>한복 이름</label>
                     <input type='text' className='form-control' id='GoodsName'
-                    name='name' value={name} placeholder='e.g 은방울' onChange={({target : { value }}) => setName(value) } />
+                    name='name' value={name} placeholder='e.g 은방울' onChange={({target : { value }}) => setName(value) } 
+                    onKeyPress={(e) => {enterSearch(e)}}/>
                     <small id='GoodsNameHelp' className='form-text text-muted' >한복 이름을 검색합니다.</small>
                 </div>
                 <div className='form-group col'>    
@@ -113,7 +176,8 @@ const Hanbok = () => {
                 </div>
                 </div>
                 </form>
-                <button className='btn btn-primary' onClick={() => search()}>검색</button>
+                {/* <button className='btn btn-primary' onClick={() => search()}>검색</button> */}
+                <button className='btn btn-primary ml-3' onClick={() => search2()}>검색</button>
             </div>
             
             <div className='container border mt-4 p-3'>
@@ -157,18 +221,26 @@ const Hanbok = () => {
             <table className='table table-striped'>
             <thead>
                 <tr>
-                    <th scope='col' name='g' onClick={(e) => {onSort(e)}}>번호</th>
-                    <th scope='col' name='gs_maker' onClick={(e) => {onSort('gs_maker')}}>매입처</th>
-                    <th scope='col' name='gs_name' onClick={(e) => {onSort(e)}}>위치</th>
-                    <th scope='col' name='gs_name' onClick={(e) => {onSort(e)}}>이름</th>
-                    <th scope='col' name='gs_kind' onClick={(e) => {onSort(e)}}>종류</th>
+                    <th scope='col' name='index' onClick={(e) => {onSort(e)}}>번호</th>
+                    <th scope='col' name='gs_maker' id='maker' onClick={(e) => {onSort(e)}}>매입처</th>
+                    <th scope='col' name='gs_position' id='position' onClick={(e) => {onSort(e)}}>위치</th>
+                    <th scope='col' name='gs_name' id='name' onClick={(e) => {onSort(e)}}>이름</th>
+                    <th scope='col' name='gs_kind' id='type' onClick={(e) => {onSort(e)}}>종류</th>
                 </tr>
             </thead>
             <tbody>
-                {/* {hanbokList} */}
-                {hanboks.map((item, index) =>
-                    <HanbokItem key={item.gs_Count} index={index+1} item={item} onView={onView}/>
+                {searchList.map((item, index) =>
+                    <HanbokItem index={index+1} item={item} onView={onView}/>
                 )}
+                {/* {searchList.map((item, index) =>
+                    <tr>
+                        <td>{index}.</td>
+                        <td>{item.gs_maker}</td>
+                        <td>{item.gs_position}</td>
+                        <td>{item.gs_name}</td>
+                        <td>{item.gs_kind}</td>
+                    </tr>
+                )} */}
             </tbody>
             </table>
         </div>

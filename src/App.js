@@ -19,6 +19,7 @@ class App extends Component {
           {/* <Link className='HeaderContainer-Link' to='/Table'>Table</Link> */}
           <Link className='HeaderContainer-Link' to='/Search'>Search</Link>
           <Link className='HeaderContainer-Link' to='/Hanbok'>Hanbok</Link>
+          <Link className='HeaderContainer-Link' to='/Hanbok2'>Hanbok2</Link>
           <Link className='HeaderContainer-Link' to='/WeekList'>WeekList</Link>
           <Link className='HeaderContainer-Link' to='/WeekListVanila'>WeekList2</Link>
           {/* <Link className='HeaderContainer-Link' to='/Payment'>Payment</Link> */}
@@ -42,4 +43,5 @@ class App extends Component {
 }
 
 export default App;
+
 

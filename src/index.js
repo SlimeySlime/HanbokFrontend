@@ -19,7 +19,6 @@ ReactDOM.render(
     <BrowserRouter>
       <Title />
       <App />
-      
       <Routes>
         <Route path='/' element={ <Search /> }></Route>
         <Route path='/Search' element={ <Search /> }></Route>
@@ -28,7 +27,7 @@ ReactDOM.render(
         <Route path='/WeekListVanila' element= { <WeekListVanila /> }></Route>
         <Route path='/Payment' element={<Payment />}></Route>
         <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
-        <Route path='/search2' element={<Search2 />}></Route>
+        <Route path='/Hanbok2' element={<Search2 />}></Route>
         
       </Routes>
     </BrowserRouter>
