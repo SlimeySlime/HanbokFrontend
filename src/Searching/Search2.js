@@ -23,8 +23,11 @@ const Search2 = () => {
     const searchHanbok = () => {
         const nameReg = new RegExp(`${hanbokName.trim()}`, 'gi');
         let searchedList = hanbokList.filter(item => nameReg.test(item.gs_name));
-        const typeReg = new RegExp(`${hanbokType.trim()}`, 'gi');
-        searchedList = searchedList.filter(item => typeReg.test(item.gs_kind));
+
+        // const nameReg = new RegExp(`${hanbokName.trim()}`, 'gi');
+        // let searchedList = hanbokList.filter(item => nameReg.test(item.gs_name));
+        // const typeReg = new RegExp(`${hanbokType.trim()}`, 'gi');
+        // searchedList = searchedList.filter(item => typeReg.test(item.gs_kind));
 
         setSearchList(searchedList);
     }
@@ -65,8 +68,8 @@ const Search2 = () => {
     }, [hanbokList])
 
     const deleteHanbok = () => {
-        // 똑같은데 window.confirm
         window.confirm('정말 삭제하시겠습니까?');
+        
     }
 
     const checkPostData = (name, type, maker) => {

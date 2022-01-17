@@ -111,7 +111,8 @@ const Hanbok = () => {
     const onSort = (e) => {
         // console.log('sorting', keyword)
         console.log('sorting', e.target.id);
-        let sorted = [...searchList]
+        let sorted = [...searchList]  
+
         if (e.target.id === 'maker') {
             sorted.sort((a, b) =>{
                 if (a.gs_maker < b.gs_maker) {
@@ -124,7 +125,8 @@ const Hanbok = () => {
             });
         }else if (e.target.id === 'name') {
             sorted.sort((a, b) => {
-                return a.gs_name.localeCompare(b.gs_name);  // 될까?
+                return a.gs_name.localeCompare(b.gs_name); 
+                // a => {a.gs_name, a.gs_maker, gs_position, gs_}
             });
         }else if (e.target.id === 'type') {
             sorted.sort((a, b) =>{
@@ -140,7 +142,6 @@ const Hanbok = () => {
             sorted.sort((a, b) => a.gs_position.localeCompare(b.gs_position));
         }
         setSearchList(sorted);
-        // console.log(sorted);
         console.log(searchList);
     }
 
