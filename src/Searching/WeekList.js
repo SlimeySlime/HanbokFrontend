@@ -67,6 +67,7 @@ const WeekList = () => {
             <div className='col-2'>
                 <div className='row'>
                     <div className='form-group col'>
+                        {/* <input type="date" name="startDate" id="startDate" value={new Date()} /> */}
                         <DatePicker
                             selected={startDate}
                             onChange={(e) => {setStartDate(e)}}
@@ -144,9 +145,21 @@ const WeekList = () => {
                         )}
                     </div>
                     <div className='col item-container'>
-                        <li>F</li>
+                        <li>F1</li>
                         {weekListItems.filter((item) => 
-                            item.gs_position === 'F'
+                            item.gs_position === 'F1'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
+                        <li>F2</li>
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'F2'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
+                        )}
+                        <li>F3</li>
+                        {weekListItems.filter((item) => 
+                            item.gs_position === 'F3'
                         ).map((item, index) => 
                             <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
                         )}

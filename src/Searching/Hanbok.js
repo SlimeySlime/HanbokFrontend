@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 import HanbokItem from './HanbokItem';
+import styled from 'styled-components';
 
 const Hanbok = () => {
     const [name, setName] = useState('')
@@ -19,12 +20,7 @@ const Hanbok = () => {
             setHanboks(result.data);
             setSearchList(result.data);
         })
-        // .then((result) => {
-        //     // console.log('axios done');
-        //     // console.log('hanboks', hanboks)
-        //     setHanboks(result.data);
-        //     setSearchList(result.data);
-        // })
+
     },[])
 
     const search2 = () => {
@@ -66,9 +62,10 @@ const Hanbok = () => {
             method: postMethod,
             searchName : name,
             searchType: type,
-        }).then((res) => {
-            setHanboks(res.data);
-            console.log('post res', res);
+        }).then((result) => {
+            setHanboks(result.data);
+            setSearchList(result.data);
+
             if (postMethod === 'DELETE') {
                 setCurrentItem({});
             }
@@ -126,7 +123,6 @@ const Hanbok = () => {
         }else if (e.target.id === 'name') {
             sorted.sort((a, b) => {
                 return a.gs_name.localeCompare(b.gs_name); 
-                // a => {a.gs_name, a.gs_maker, gs_position, gs_}
             });
         }else if (e.target.id === 'type') {
             sorted.sort((a, b) =>{
@@ -145,10 +141,6 @@ const Hanbok = () => {
         console.log(searchList);
     }
 
-    // useEffect(() => {
-    //     search2();
-    // }, [name, type])
-
     const enterSearch = (e) => {
         if (e.key === 'Enter') {
             search2()
@@ -164,7 +156,7 @@ const Hanbok = () => {
                 <div className='row'>
                 <div className='form-group col'>
                     <label htmlFor='GoodsName'>한복 이름</label>
-                    <input type='text' className='form-control' id='GoodsName'
+                    <KeywordInput type='text' className='form-control' id='GoodsName'
                     name='name' value={name} placeholder='e.g 은방울' onChange={({target : { value }}) => setName(value) } 
                     onKeyPress={(e) => {enterSearch(e)}}/>
                     <small id='GoodsNameHelp' className='form-text text-muted' >한복 이름을 검색합니다.</small>
@@ -255,5 +247,18 @@ const Hanbok = () => {
 
     
 }
+
+const KeywordInput = styled.input`
+    width: 100%;
+    transition: all .1s linear;
+    background-color: #f3a303;
+    border: 1px solid #af0f0f;
+
+    &:focus {
+        width: 200px;
+        background-color: #f3a353;
+        transform: translateX(-10px);
+    }
+`
 
 export default Hanbok
