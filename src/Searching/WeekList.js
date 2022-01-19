@@ -5,12 +5,16 @@ import 'react-datepicker/dist/react-datepicker.css'
 // import style from './WeekList.module.css';
 // import Flickity from 'react-flickity-component';
 import styled from 'styled-components';
+import {Swiper, SwiperSlide, navigation, pagination} from 'swiper/react';
+import 'swiper/css';
+// import 'swiper/swiper-bundle.css';
 
 const WeekList = () => {
     
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [weekListItems, setWeekListItems] = useState([]);
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
@@ -45,6 +49,17 @@ const WeekList = () => {
         console.log('column select ', e);
     }
 
+    const updateIndex = (index) => {
+        if (index < 0) {
+            index = 0;
+        }else if (index >= 3) {
+            index = 2
+        }
+        console.log(`set Index to ${index}`);
+        setActiveIndex(index);
+
+    }
+
     const changeWeek = (keyword) => {
         // Prev , Next
         if (keyword === 'Prev') {
@@ -64,7 +79,7 @@ const WeekList = () => {
 
     return(
         <div className='p-3 mt-2 row'>
-            <div className='col-2'>
+            <div className='col-5-sm'>
                 <div className='row'>
                     <div className='form-group col'>
                         {/* <input type="date" name="startDate" id="startDate" value={new Date()} /> */}
@@ -94,7 +109,7 @@ const WeekList = () => {
                 </div>
             </div>
             
-            <div className='col'> 
+            <div className='col' hidden='true'> 
                 <div className='row'>
                     <div className='col item-container' onclick={console.log('A clicked')}>
                         <li>A</li>
@@ -125,7 +140,7 @@ const WeekList = () => {
                         {weekListItems.filter((item) => 
                             item.gs_position === 'C'
                         ).map((item, index) => 
-                            <WeekItem onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</WeekItem>
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
                         )}
                     </div>
                     <div className='col item-container'>
@@ -167,14 +182,159 @@ const WeekList = () => {
                 </div>
             </div>
 
-            
+            <Carousel hidden='true'>
+                <Indicator>
+                    <button onClick={() => {updateIndex(activeIndex - 1)}}>prev</button>
+                    <button onClick={() => {updateIndex(activeIndex + 1)}}>next</button>
+                </Indicator>
+                <CarouselWrapper style={{transform : `translateX(${activeIndex * -100}%)`}}>
+                    <CarouselItem>
+                        <div className='container'>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1232323232</li>
+                        </div>
+                        
+                    </CarouselItem>
+                    <CarouselItem>
+                        <div className='container'>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1232323232</li>
+                        </div>
+                    </CarouselItem>
+                    <CarouselItem>
+                        <div className='container'>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1</li>
+                            <li>item1232323232</li>
+                        </div>
+                    </CarouselItem>
+                </CarouselWrapper>
+                
+            </Carousel>
+            <div className='container'>
+
+            </div>
+            <Swiper
+                navigation
+                pagination
+                spaceBetween={10}
+                slidesPerView={3}
+                onSlideChange={() => console.log('page is')}
+                onSwiper={(swiper) => {console.log(swiper)}}
+                >
+                <SwiperSlide>
+                    <CarouselItem>
+                        <p className='text-center p-3'><b>A 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'A'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                    </CarouselItem>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <CarouselItem>
+                        <p className='text-center p-3'><b>B 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'B'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                    </CarouselItem>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <CarouselItem>
+                        <p className='text-center p-3'><b>C 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'C'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                    </CarouselItem>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <CarouselItem>
+                        <p className='text-center p-3'><b>D 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'D'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                    </CarouselItem>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <CarouselItem>
+                        <p className='text-center p-3'><b>E 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'E'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                    </CarouselItem>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <CarouselItem>
+                        <p className='text-center p-3'><b>F1 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'F1'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                        <p className='text-center p-3'><b>F2 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'F2'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                        <p className='text-center p-3'><b>F3 구역</b></p>
+                        {weekListItems.filter((item, index) => 
+                            item.gs_position === 'F3'
+                        ).map((item, index) => 
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        )}
+                    </CarouselItem>
+                </SwiperSlide>
+            </Swiper>
         </div>
     )
 }
 
-const WeekItem = styled.p `
-    /* background-color: #464646;
-    color: #d8d8d8; */
-    color : ${(props) => props.color || "black"} ;
+const Carousel = styled.div`
+    overflow: hidden;
 `
+// white-space : 공백문자 처리방법
+const CarouselWrapper = styled.div`
+    white-space: nowrap;
+    transition: transform 0.3s;
+    align-items: center;
+`
+
+const CarouselItem = styled.div`
+    padding-left: 14px;
+    width: 100%;
+    height: 100%;
+    background-color: #f3f3f3;
+    border: 1px solid black;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+
+`
+
+const Indicator = styled.div`
+    display: flex;
+    justify-content: center;
+    
+`
+
 export default WeekList;

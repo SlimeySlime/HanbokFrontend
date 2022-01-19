@@ -23,6 +23,7 @@ const Hanbok = () => {
 
     },[])
 
+    // filter식 검색
     const search2 = () => {
         const nameReg = new RegExp(`${name}`, 'gi');
         let searched = hanboks.filter(item => nameReg.test(item.gs_name));
@@ -146,6 +147,11 @@ const Hanbok = () => {
             search2()
         }
     }
+
+    // 실시간 검색(filter) 
+    useEffect(() => {
+        search2();
+    }, [name, type])
 
     return (
     <div className='container-fluid'>
