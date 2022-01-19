@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 // import style from './WeekList.module.css';
 // import Flickity from 'react-flickity-component';
 import styled from 'styled-components';
-import {Swiper, SwiperSlide, navigation, pagination} from 'swiper/react';
+import {Swiper, SwiperSlide, navigation, pagination, freeMode} from 'swiper/react';
 import 'swiper/css';
 // import 'swiper/swiper-bundle.css';
 
@@ -23,8 +23,10 @@ const WeekList = () => {
         const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
         const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
         setStartDate(weekStart);
+        console.log(weekStart.toISOString().split('T'));
         const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
         setEndDate(weekEnd);
+        // console.log(weekEnd.toISOString().split('T'));
  
         // searchWeek(weekStart, weekEnd); -> useEffect(() => , [setStartDate, setEndDate])
     }, [])
@@ -59,6 +61,16 @@ const WeekList = () => {
         setActiveIndex(index);
 
     }
+    const datePick = (e) => {
+        let pick = e.target.value
+        if (e.target.id === 'startDate') {
+            setStartDate(new Date(pick))
+        }else if (e.target.id === 'endDate') {
+            setEndDate(new Date(pick))
+        }
+        // console.log(pick);
+        // console.log(new Date(pick))
+    }
 
     const changeWeek = (keyword) => {
         // Prev , Next
@@ -82,28 +94,34 @@ const WeekList = () => {
             <div className='col-5-sm'>
                 <div className='row'>
                     <div className='form-group col'>
-                        {/* <input type="date" name="startDate" id="startDate" value={new Date()} /> */}
-                        <DatePicker
+                        <input type="date" name="startDate" id="startDate" 
+                        onChange={(e) => {datePick(e)}} value={startDate.toISOString().split('T')[0]} />
+                        {/* <DatePicker
                             selected={startDate}
                             onChange={(e) => {setStartDate(e)}}
                             selectsStart={endDate}
                             startDate={startDate}
                             endDate={endDate}
-                        />
+                        /> */}
                         <small className='form-text text-muted'>시작 날짜</small>
                     </div>
                     <div className='form-group col'>
-                        <DatePicker
+                        <input type="date" name="endDate" id="endDate"
+                         onChange={(e) => {datePick(e)}} value={endDate.toISOString().split('T')[0]} />
+                        {/* <DatePicker
                             selected={endDate}
                             onChange={(e) => {setEndDate(e)}}
                             selectsEnd={endDate}
                             startDate={startDate}
                             endDate={endDate}
-                        />
+                        /> */}
                         <small className='form-text text-muted'>마감 날짜</small>
                     </div>
-                    <button className='btn btn-primary m-2'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
-                    <button className='btn btn-primary m-2' onClick={() => {changeWeek('Next')}}>다음주 </button>
+                    <div className='row'>
+                        <button className='btn btn-primary ml-5 my-3'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
+                        <button className='btn btn-primary mx-3 my-3' onClick={() => {changeWeek('Next')}}>다음주 </button>
+                    </div>
+                    
                     {/* <button className='btn btn-primary m-2' onClick={() => searchWeek()}>검색</button> */}
 
                 </div>
@@ -228,13 +246,16 @@ const WeekList = () => {
                 navigation
                 pagination
                 spaceBetween={10}
-                slidesPerView={3}
+                slidesPerView={2}
+                freeMode={
+                    {enabled:true, sticky:false}
+                }
                 onSlideChange={() => console.log('page is')}
                 onSwiper={(swiper) => {console.log(swiper)}}
                 >
                 <SwiperSlide>
                     <CarouselItem>
-                        <p className='text-center p-3'><b>A 구역</b></p>
+                        <p className='text-center my-2'><b>A 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'A'
                         ).map((item, index) => 
@@ -244,7 +265,7 @@ const WeekList = () => {
                 </SwiperSlide>
                 <SwiperSlide>
                     <CarouselItem>
-                        <p className='text-center p-3'><b>B 구역</b></p>
+                        <p className='text-center my-2'><b>B 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'B'
                         ).map((item, index) => 
@@ -254,7 +275,7 @@ const WeekList = () => {
                 </SwiperSlide>
                 <SwiperSlide>
                     <CarouselItem>
-                        <p className='text-center p-3'><b>C 구역</b></p>
+                        <p className='text-center my-2'><b>C 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'C'
                         ).map((item, index) => 
@@ -264,7 +285,7 @@ const WeekList = () => {
                 </SwiperSlide>
                 <SwiperSlide>
                     <CarouselItem>
-                        <p className='text-center p-3'><b>D 구역</b></p>
+                        <p className='text-center my-2'><b>D 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'D'
                         ).map((item, index) => 
@@ -274,7 +295,7 @@ const WeekList = () => {
                 </SwiperSlide>
                 <SwiperSlide>
                     <CarouselItem>
-                        <p className='text-center p-3'><b>E 구역</b></p>
+                        <p className='text-center my-2'><b>E 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'E'
                         ).map((item, index) => 
@@ -284,19 +305,19 @@ const WeekList = () => {
                 </SwiperSlide>
                 <SwiperSlide>
                     <CarouselItem>
-                        <p className='text-center p-3'><b>F1 구역</b></p>
+                        <p className='text-center my-2'><b>F1 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'F1'
                         ).map((item, index) => 
                             <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
                         )}
-                        <p className='text-center p-3'><b>F2 구역</b></p>
+                        <p className='text-center my-2'><b>F2 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'F2'
                         ).map((item, index) => 
                             <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
                         )}
-                        <p className='text-center p-3'><b>F3 구역</b></p>
+                        <p className='text-center my-2'><b>F3 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'F3'
                         ).map((item, index) => 
