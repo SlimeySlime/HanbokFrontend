@@ -23,21 +23,21 @@ const WeekList = () => {
         const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
         const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
         setStartDate(weekStart);
-        console.log(weekStart.toISOString().split('T'));
         const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
         setEndDate(weekEnd);
-        // console.log(weekEnd.toISOString().split('T'));
- 
-        // searchWeek(weekStart, weekEnd); -> useEffect(() => , [setStartDate, setEndDate])
     }, [])
 
-    const searchWeek = () => {
+    // [startDate, endDate] 가 변경되면 searchWeek() 호출;
+    useEffect(() => {
+        searchWeek();
+    }, [startDate, endDate]);
 
+    const searchWeek = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
         console.log(`searching ${startDateStr} ~ ${endDateStr}`);
 
-        axios.get(searchPath + '/naver', {
+        axios.get(searchPath + '/week', {
             params: {
                 startDate : startDateStr,
                 endDate: endDateStr
@@ -68,8 +68,7 @@ const WeekList = () => {
         }else if (e.target.id === 'endDate') {
             setEndDate(new Date(pick))
         }
-        // console.log(pick);
-        // console.log(new Date(pick))
+
     }
 
     const changeWeek = (keyword) => {
@@ -83,11 +82,6 @@ const WeekList = () => {
         }
         // ToDo - 현재에서 -+7이 아니라, 무조건 7일되도록
     }
-
-    // [startDate, endDate] 가 변경되면 searchWeek() 호출;
-    useEffect(() => {
-        searchWeek();
-    }, [startDate, endDate]);
 
     return(
         <div className='p-3 mt-2 row'>
@@ -108,13 +102,6 @@ const WeekList = () => {
                     <div className='form-group col'>
                         <input type="date" name="endDate" id="endDate"
                          onChange={(e) => {datePick(e)}} value={endDate.toISOString().split('T')[0]} />
-                        {/* <DatePicker
-                            selected={endDate}
-                            onChange={(e) => {setEndDate(e)}}
-                            selectsEnd={endDate}
-                            startDate={startDate}
-                            endDate={endDate}
-                        /> */}
                         <small className='form-text text-muted'>마감 날짜</small>
                     </div>
                     <div className='row'>
@@ -200,48 +187,6 @@ const WeekList = () => {
                 </div>
             </div>
 
-            <Carousel hidden='true'>
-                <Indicator>
-                    <button onClick={() => {updateIndex(activeIndex - 1)}}>prev</button>
-                    <button onClick={() => {updateIndex(activeIndex + 1)}}>next</button>
-                </Indicator>
-                <CarouselWrapper style={{transform : `translateX(${activeIndex * -100}%)`}}>
-                    <CarouselItem>
-                        <div className='container'>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1232323232</li>
-                        </div>
-                        
-                    </CarouselItem>
-                    <CarouselItem>
-                        <div className='container'>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1232323232</li>
-                        </div>
-                    </CarouselItem>
-                    <CarouselItem>
-                        <div className='container'>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1</li>
-                            <li>item1232323232</li>
-                        </div>
-                    </CarouselItem>
-                </CarouselWrapper>
-                
-            </Carousel>
-            <div className='container'>
-
-            </div>
             <Swiper
                 navigation
                 pagination
@@ -259,7 +204,9 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'A'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                                {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                            </p>
                         )}
                     </CarouselItem>
                 </SwiperSlide>
@@ -269,7 +216,9 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'B'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                            {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                        </p>
                         )}
                     </CarouselItem>
                 </SwiperSlide>
@@ -279,7 +228,9 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'C'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                            {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                        </p>
                         )}
                     </CarouselItem>
                 </SwiperSlide>
@@ -289,7 +240,9 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'D'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                            {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                        </p>
                         )}
                     </CarouselItem>
                 </SwiperSlide>
@@ -299,7 +252,9 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'E'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                            {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                        </p>
                         )}
                     </CarouselItem>
                 </SwiperSlide>
@@ -309,24 +264,31 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'F1'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                                {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                            </p>
                         )}
                         <p className='text-center my-2'><b>F2 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'F2'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                                {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name} {item.rt_Gubun != '대여'? item.rt_Gubun : ''}
+                            </p>
                         )}
                         <p className='text-center my-2'><b>F3 구역</b></p>
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'F3'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{index + 1}. {item.gs_name}</p>
+                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                                {index + 1}. {item.rt_Delivery != '' ? `택)` : ''} {item.gs_name}
+                            </p>
                         )}
                     </CarouselItem>
                 </SwiperSlide>
             </Swiper>
         </div>
+            
     )
 }
 
