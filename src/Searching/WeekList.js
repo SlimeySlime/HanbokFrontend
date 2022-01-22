@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import styled from 'styled-components';
 import {Swiper, SwiperSlide, navigation, pagination, freeMode} from 'swiper/react';
 import 'swiper/css';
+import { maxWidth } from '@mui/system';
 // import 'swiper/swiper-bundle.css';
 
 const WeekList = () => {
@@ -114,79 +115,6 @@ const WeekList = () => {
                 </div>
             </div>
             
-            <div className='col' hidden='true'> 
-                <div className='row'>
-                    <div className='col item-container' onclick={console.log('A clicked')}>
-                        <li>A</li>
-                        {/* {weekListItemSorted[0].map((item, index) => 
-                            <p onclick={console.log('A clicked')}>{item.gs_name}</p>
-                            
-                        )} */}
-                        {weekListItems.filter((item, index) => 
-                            item.gs_position === 'A'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                    </div>
-                    <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
-                        <li>B</li> 
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'B'
-                        ).map((item, index) => 
-                            
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {item.gs_name}
-                                {/* <img src='http://210.114.10.11/Hanbok/담채/저고리/연두당의.jpg'></img> */}
-                            </p>
-                        )}
-                    </div>
-                    <div className='col item-container' onClick={(e) => {columnSelect(e)}}>
-                        <li>C</li>
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'C'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                    </div>
-                    <div className='col item-container'>
-                        <li>D</li>
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'D'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                    </div>
-                    <div className='col item-container'>
-                        <li>E</li>
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'E'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                    </div>
-                    <div className='col item-container'>
-                        <li>F1</li>
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'F1'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                        <li>F2</li>
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'F2'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                        <li>F3</li>
-                        {weekListItems.filter((item) => 
-                            item.gs_position === 'F3'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>{item.gs_name}</p>
-                        )}
-                    </div>
-                </div>
-            </div>
-
             <Swiper
                 navigation
                 pagination
@@ -197,6 +125,7 @@ const WeekList = () => {
                 }
                 onSlideChange={() => console.log('page is')}
                 onSwiper={(swiper) => {console.log(swiper)}}
+                style={{maxWidth : '800px'}}
                 >
                 <SwiperSlide>
                     <CarouselItem>
@@ -287,6 +216,7 @@ const WeekList = () => {
                     </CarouselItem>
                 </SwiperSlide>
             </Swiper>
+            
         </div>
             
     )

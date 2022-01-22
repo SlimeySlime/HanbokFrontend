@@ -22,6 +22,7 @@ class App extends Component {
           <Link className='HeaderContainer-Link' to='/Hanbok2'>Hanbok2</Link>
           <Link className='HeaderContainer-Link' to='/WeekList'>WeekList</Link>
           <Link className='HeaderContainer-Link' to='/WeekListVanila'>WeekList2</Link>
+          <Link className='HeaderContainer-Link' to='/Native'>Native</Link>
           {/* <Link className='HeaderContainer-Link' to='/Payment'>Payment</Link> */}
           <a className='dropdown inline'>
             <button className='btn btn-secondary dropdown-toggle' type='button' 

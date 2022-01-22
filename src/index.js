@@ -13,6 +13,7 @@ import Payment from './Searching/Payment/Payment';
 import PaymentSetting from './Searching/Payment/PaymentSetting';
 import Title from './Title'
 import Search2 from './Searching/Search2';
+import Native from './Searching/Native';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -25,6 +26,7 @@ ReactDOM.render(
         <Route path='/Hanbok' element= { <Hanbok /> }></Route>
         <Route path='/WeekList' element= { <WeekList /> }></Route>
         <Route path='/WeekListVanila' element= { <WeekListVanila /> }></Route>
+        <Route path='/Native' element= { <Native /> }></Route>
         <Route path='/Payment' element={<Payment />}></Route>
         <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
         <Route path='/Hanbok2' element={<Search2 />}></Route>
