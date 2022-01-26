@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import { StatusBar } from 'expo-status-bar';
-import { Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import axios from 'axios';
 
 export default function Native() {
@@ -49,14 +49,27 @@ export default function Native() {
         defaultValue={searchText}
       >
       </TextInput>
-      {/* <Button defaultValue='추가'>추가 하기</Button>*/}
-      {/* <StatusBar style="auto" /> */}
-      <FlatList
+      {/* <FlatList
         data={hanboks}
         renderItem={({item}) => 
           <Text style={styles.item}>{item.name}</Text>
         }
-      />
+      /> */}
+      <ScrollView
+        horizontal={true}
+      >
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+        <Text style={styles.item}>item1</Text>
+      </ScrollView>
     </View>
   );
 }

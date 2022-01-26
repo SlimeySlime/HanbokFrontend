@@ -156,13 +156,13 @@ const Hanbok = () => {
     return (
     <div className='container-fluid'>
     <div className='row'>
-        <div className='col-4'>
+        <div className='col-lg'>
             <div className='conatiner mt-3'>
                 <form>
                 <div className='row'>
                 <div className='form-group col'>
                     <label htmlFor='GoodsName'>한복 이름</label>
-                    <KeywordInput type='text' className='form-control' id='GoodsName'
+                    <input type='text' className='form-control' id='GoodsName'
                     name='name' value={name} placeholder='e.g 은방울' onChange={({target : { value }}) => setName(value) } 
                     onKeyPress={(e) => {enterSearch(e)}}/>
                     <small id='GoodsNameHelp' className='form-text text-muted' >한복 이름을 검색합니다.</small>
@@ -216,7 +216,7 @@ const Hanbok = () => {
 
             </div>
         </div>
-        <div className='col-8'>
+        <div className='col-lg'>
             <table className='table table-striped'>
             <thead>
                 <tr>
@@ -231,15 +231,6 @@ const Hanbok = () => {
                 {searchList.map((item, index) =>
                     <HanbokItem index={index+1} item={item} onView={onView}/>
                 )}
-                {/* {searchList.map((item, index) =>
-                    <tr>
-                        <td>{index}.</td>
-                        <td>{item.gs_maker}</td>
-                        <td>{item.gs_position}</td>
-                        <td>{item.gs_name}</td>
-                        <td>{item.gs_kind}</td>
-                    </tr>
-                )} */}
             </tbody>
             </table>
         </div>
@@ -250,8 +241,6 @@ const Hanbok = () => {
     
     </div>
     )
-
-    
 }
 
 const KeywordInput = styled.input`
