@@ -18,7 +18,7 @@ import Native from './Searching/Native';
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Title />
+      {/* <Title /> */}
       <App />
       <Routes>
         <Route path='/' element={ <Search /> }></Route>
@@ -30,7 +30,6 @@ ReactDOM.render(
         <Route path='/Payment' element={<Payment />}></Route>
         <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
         <Route path='/Hanbok2' element={<Search2 />}></Route>
-        
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
