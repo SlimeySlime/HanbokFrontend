@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import RentalItem from './Rentalitem';
+import RentalModal from './InfoModal';
+import styled from 'styled-components';
 
 const RentalSearch = () => {
 
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [rentalData, setRentalData] = useState([]);
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
@@ -62,8 +66,11 @@ const RentalSearch = () => {
     }
 
     const modalOpen = (rentalInfo) => {
-        console.log('modal');
-        console.log(rentalInfo)
+        setModalVisible(true);
+    }
+
+    const modalClose = () => {
+        setModalVisible(false);
     }
 
     return (
@@ -88,7 +95,23 @@ const RentalSearch = () => {
                 </div>
                 {/* 조악한 버튼위치 */}
                 <button className='btn btn-primary m-3 mb-5' onClick={() => {}}>검색</button>
+                <button className='btn btn-secondary m-3 mb-5' onClick={() => {modalOpen()}}>모달 테스트</button>
             </div>
+            <RentalModal></RentalModal>
+            <div>
+                <ModalOverlay visible={modalVisible}/>
+                <ModalWrapper visible={modalVisible}
+                onClick={(e) => {modalClose(e); console.log('click Wrapper')}} >
+                <ModalInner tabIndex="0" className="modal-inner">
+                    <p>am modal 1</p>
+                    <p>am modal 2</p>
+                    <p>am modal 3</p>
+                    <p>am modal 4</p>
+                    <p>am modal</p>
+                </ModalInner>
+                </ModalWrapper>
+            </div>
+            
             <table className='table table-hover'>
                 <thead>
                     <tr>
@@ -106,7 +129,7 @@ const RentalSearch = () => {
                 </thead>
                 <tbody>
                     {rentalData.map((item) => 
-                        <RentalItem modal={modalOpen} onClick={() => {console.log('click')}} item={item}></RentalItem>
+                        <RentalItem modalOpen={modalOpen} info={item}></RentalItem>
                     )}
                 </tbody>
                 {/* 합계 등 표시용 */}
@@ -129,5 +152,51 @@ const RentalSearch = () => {
     </div>
     )
 }
+
+
+const Modal = styled.div`
+    display: ${(props) => (props.visible ? 'block' : 'none')};
+`
+
+const ModalWrapper = styled.div`
+    box-sizing: border-box;
+    display: ${(props) => (props.visible ? 'block' : 'none')};
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    overflow: auto;
+    outline: 0;
+`
+
+const ModalOverlay = styled.div`
+    box-sizing: border-box;
+    display: ${(props) => (props.visible ? 'block' : 'none')};
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+`
+
+const ModalInner = styled.div`
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+    border-radius: 10px;
+    width: 360px;
+    max-width: 480px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 auto;
+    padding: 40px 20px;
+    z-index: 50;
+  
+`
 
 export default RentalSearch;

@@ -1,11 +1,34 @@
 import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const InfoModal = () => {
 
+    const [modalVisible, setModalVisible] = useState(true);
+
+    const modalClose = (e) => {
+        // console.log(`current : ${e.currentTarget} , target : ${e.target}`)
+        if (e.currentTarget === e.target) {
+            setModalVisible(false);
+        }
+        
+    }
+
     return (
         <div>
-
+            <Modal>
+                <ModalOverlay visible={modalVisible}/>
+                <ModalWrapper visible={modalVisible}
+                onClick={(e) => {modalClose(e); console.log('click Wrapper')}} >
+                <ModalInner tabIndex="0" className="modal-inner">
+                    <p>am modal 1</p>
+                    <p>am modal 2</p>
+                    <p>am modal 3</p>
+                    <p>am modal 4</p>
+                    <p>am modal</p>
+                </ModalInner>
+                </ModalWrapper>
+            </Modal>
         </div>
     )
 }
