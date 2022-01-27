@@ -14,6 +14,8 @@ import PaymentSetting from './Searching/Payment/PaymentSetting';
 import Title from './Title'
 import Search2 from './Searching/Search2';
 import Native from './Searching/Native';
+import RentalSearch from './Searching/Rental/RentalSearch';
+import Rental from './Searching/Rental/Rental';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,6 +32,8 @@ ReactDOM.render(
         <Route path='/Payment' element={<Payment />}></Route>
         <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
         <Route path='/Hanbok2' element={<Search2 />}></Route>
+        <Route path='/RentalSearch' element={<RentalSearch />}></Route>
+        <Route path='/Rental' element={<Rental />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

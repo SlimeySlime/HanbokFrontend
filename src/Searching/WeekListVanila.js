@@ -28,23 +28,26 @@ const WeekList = () => {
     return(
         <div className='container'>
             <button class="btn btn-secondary mt-3" onClick={()=> setModalVisible(true)}>모달</button>
-            
-            <ModalOverlay visible={modalVisible}/>
-            <ModalWrapper visible={modalVisible}
-            onClick={(e) => {modalClose(e); console.log('click Wrapper')}} >
-            <ModalInner tabIndex="0" className="modal-inner">
-                <p>am modal 1</p>
-                <p>am modal 2</p>
-                <p>am modal 3</p>
-                <p>am modal 4</p>
-                <p>am modal</p>
-            </ModalInner>
-            </ModalWrapper>
-            
+            <Modal>
+                <ModalOverlay visible={modalVisible}/>
+                <ModalWrapper visible={modalVisible}
+                onClick={(e) => {modalClose(e); console.log('click Wrapper')}} >
+                <ModalInner tabIndex="0" className="modal-inner">
+                    <p>am modal 1</p>
+                    <p>am modal 2</p>
+                    <p>am modal 3</p>
+                    <p>am modal 4</p>
+                    <p>am modal</p>
+                </ModalInner>
+                </ModalWrapper>
+            </Modal>
         </div>
         
     )
 }
+const Modal = styled.div`
+    display: ${(props) => (props.visible ? 'block' : 'none')};
+`
 
 const ModalWrapper = styled.div`
     box-sizing: border-box;

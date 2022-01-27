@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom'
 
-
 class App extends Component {
 
   render(){
@@ -18,22 +17,30 @@ class App extends Component {
           </div>
         <div class="container-fluid">
           <a class="navbar-brand" href="#">비단본가</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+          {/* 모바일 드롭다운 메뉴 */}
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03"
+           aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
 
           <div class="collapse navbar-collapse" id="navbarsExample03">
-            <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+            {/* <ul class="navbar-nav me-auto mb-2 mb-sm-0"> */}
+            <ul class="navbar-nav me-auto">
               <li class="nav-item">
-                {/* <a class="nav-link active" aria-current="page" href="#">Home</a> */}
                 <Link className='HeaderContainer-Link nav-link active' to='/Search'>전체 검색</Link>
               </li>
               <li class="nav-item">
-                {/* <a class="nav-link" href="#">Link</a> */}
                 <Link className='HeaderContainer-Link nav-link' to='/Hanbok'>한복 검색</Link>
               </li>
               <li class="nav-item">
                 <Link className='HeaderContainer-Link nav-link active' to='/WeekList'>WeekList</Link>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-expanded="false">대여관리</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdown03">
+                  <Link className='HeaderContainer-Link dropdown-item' to='/RentalSearch'>대여조회</Link>
+                  <Link className='HeaderContainer-Link dropdown-item' to='/Rental'>대여관리</Link>
+                </ul>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-expanded="false">금전출납</a>

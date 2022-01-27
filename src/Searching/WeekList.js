@@ -5,10 +5,12 @@ import 'react-datepicker/dist/react-datepicker.css'
 // import style from './WeekList.module.css';
 // import Flickity from 'react-flickity-component';
 import styled from 'styled-components';
-import {Swiper, SwiperSlide, navigation, pagination, freeMode} from 'swiper/react';
+import {Swiper, SwiperSlide, navigation, freeMode} from 'swiper/react';
+import SwiperCore, {FreeMode, Navigation} from 'swiper'
 import 'swiper/css';
 import { maxWidth } from '@mui/system';
-// import 'swiper/swiper-bundle.css';
+
+SwiperCore.use([FreeMode, Navigation])
 
 const WeekList = () => {
     
@@ -48,10 +50,6 @@ const WeekList = () => {
         })
     }
 
-    const columnSelect = (e) => {
-        console.log('column select ', e);
-    }
-
     const updateIndex = (index) => {
         if (index < 0) {
             index = 0;
@@ -85,19 +83,12 @@ const WeekList = () => {
     }
 
     return(
-        <div className='p-3 mt-2 row'>
+        <div className='p-3 mt-1 row'>
             <div className='col-5-sm'>
                 <div className='row'>
                     <div className='form-group col'>
                         <input type="date" name="startDate" id="startDate" 
                         onChange={(e) => {datePick(e)}} value={startDate.toISOString().split('T')[0]} />
-                        {/* <DatePicker
-                            selected={startDate}
-                            onChange={(e) => {setStartDate(e)}}
-                            selectsStart={endDate}
-                            startDate={startDate}
-                            endDate={endDate}
-                        /> */}
                         <small className='form-text text-muted'>시작 날짜</small>
                     </div>
                     <div className='form-group col'>
@@ -109,16 +100,13 @@ const WeekList = () => {
                         <button className='btn btn-primary ml-5 my-3'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
                         <button className='btn btn-primary mx-3 my-3' onClick={() => {changeWeek('Next')}}>다음주 </button>
                     </div>
-                    
-                    {/* <button className='btn btn-primary m-2' onClick={() => searchWeek()}>검색</button> */}
-
+        
                 </div>
             </div>
             
             <Swiper
                 navigation
-                pagination
-                spaceBetween={10}
+                spaceBetween={20}
                 slidesPerView={2}
                 freeMode={
                     {enabled:true, sticky:false}

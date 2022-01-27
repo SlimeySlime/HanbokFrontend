@@ -58,8 +58,7 @@ const Payment = () => {
                 payName: searchKeywords.payName === null ? '' : searchKeywords.payName,
                 payInfo: searchKeywords.payInfo === null ? '' : searchKeywords.payInfo
             }
-        })
-        .then((result) => {
+        }).then((result) => {
             // console.log(result);
             setPaymentList(result.data);
             // console.log('paymentList', paymentList);

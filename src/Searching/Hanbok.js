@@ -101,7 +101,7 @@ const Hanbok = () => {
 
     // row onClick 
     const onView = (item) => {
-        console.log(item);
+        // console.log(item);
         setCurrentItem(item);   // Todo - item 바로 다 넣지 말고, 필요한것만
     }
 
