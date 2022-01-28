@@ -2,7 +2,7 @@ import React from 'react';
 
 const Rentalitem = ({info, modalOpen}) => {
     // 흠
-    const item = info
+    // const item = info
 
     return(
         // item -> info (이름만)

@@ -9,6 +9,7 @@ const RentalSearch = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [rentalData, setRentalData] = useState([]);
+    const [currentData, setCurrentData] = useState({});
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -64,13 +65,18 @@ const RentalSearch = () => {
         }
         // ToDo - 현재에서 -+7이 아니라, 무조건 7일되도록
     }
-
+    // 모달 오픈 + currentData
     const modalOpen = (rentalInfo) => {
+        console.log('clicked ', rentalInfo);
+        setCurrentData(rentalInfo)
         setModalVisible(true);
     }
 
-    const modalClose = () => {
-        setModalVisible(false);
+    const modalClose = (e) => {
+        // 회색부분 클릭시 닫기
+        if (e.currentTarget === e.target) {
+            setModalVisible(false);
+        }
     }
 
     return (
@@ -95,24 +101,71 @@ const RentalSearch = () => {
                 </div>
                 {/* 조악한 버튼위치 */}
                 <button className='btn btn-primary m-3 mb-5' onClick={() => {}}>검색</button>
-                <button className='btn btn-secondary m-3 mb-5' onClick={() => {modalOpen()}}>모달 테스트</button>
             </div>
-            <RentalModal></RentalModal>
+            {/* <RentalModal modalVisible={modalVisible}>
+            </RentalModal> */}
             <div>
                 <ModalOverlay visible={modalVisible}/>
-                <ModalWrapper visible={modalVisible}
-                onClick={(e) => {modalClose(e); console.log('click Wrapper')}} >
+                <ModalWrapper visible={modalVisible} onClick={(e) => {modalClose(e)}} >
                 <ModalInner tabIndex="0" className="modal-inner">
-                    <p>am modal 1</p>
-                    <p>am modal 2</p>
-                    <p>am modal 3</p>
-                    <p>am modal 4</p>
-                    <p>am modal</p>
+                    <div className='container-fluid'>
+                        <div className='col'>
+                            <div className='row'>
+                                <p>계약일 : {currentData.rt_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3')}</p>
+                                <p className='p ml-3'>행사일 : {currentData.rt_rdate.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3')}</p>
+                            </div>
+                            <div className='row'>
+                                <p>고객명 : {currentData.ct_name}</p>
+                                <p className='p ml-3'>관계 : {currentData.rt_ctBigo}</p>
+                            </div>
+                            <div className='row'>
+                                <p>연락처 : {currentData.ct_tel1}</p>
+                            </div>
+                            <div className='row border-top pt-3'>
+                                <p>{currentData.rt_gsname1}</p>
+                            </div>
+                            <div className='row'>
+                                <p>{currentData.rt_gsname2}</p>
+                            </div>
+                            <div className='row'>
+                                <p>{currentData.rt_gsname3}</p>
+                            </div>
+                            <div className='row border-bottom mb-3'>
+                                <p>{currentData.rt_gsname4}</p>
+                            </div>
+                            <div className='row'>
+                                <p>{currentData.rt_bigo1}</p>
+                                <p>{currentData.rt_bigo2}</p>
+                                <p>{currentData.rt_bigo3}</p>
+                            </div>
+                        </div>
+                    </div>
                 </ModalInner>
                 </ModalWrapper>
             </div>
-            
-            <table className='table table-hover'>
+            {/* 모바일 작은 테이블 */}
+            <SimpleTable className='table table-hover'>
+                <thead>
+                    <tr>
+                        <th>구분 </th>
+                        <th>출고일</th>
+                        <th>고객명</th>
+                        <th>관계</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rentalData.map((item) => 
+                        <tr onClick={() => {modalOpen(item)}}>
+                            <td>{item.rt_Gubun}</td>
+                            <td>{item.rt_rdate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}</td>
+                            <td>{item.ct_name}</td>
+                            <td>{item.rt_ctBigo}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </SimpleTable>
+            {/* 큰 테이블 */}
+            <DetailTable className='table table-hover'>
                 <thead>
                     <tr>
                         <th>구분 </th>
@@ -132,27 +185,22 @@ const RentalSearch = () => {
                         <RentalItem modalOpen={modalOpen} info={item}></RentalItem>
                     )}
                 </tbody>
-                {/* 합계 등 표시용 */}
-                <tfoot>
-                    <tr>
-                        <th>구분 </th>
-                        <th>계약일</th>
-                        <th>출고일</th>
-                        <th>고객명</th>
-                        <th>관계</th>
-                        <th>상품명</th>    
-                        <th>금액</th>
-                        <th>선금</th>
-                        <th>잔금</th>
-                        <th>참고사항</th>
-                    </tr>
-                </tfoot>
-            </table>
+            </DetailTable>
         </div>
     </div>
     )
 }
 
+const SimpleTable = styled.table`
+    @media screen and (min-width: 1200px){
+        display: none;
+    }
+`
+const DetailTable = styled.table`
+    @media screen and (max-width: 1200px){
+        display: none;
+    }
+`
 
 const Modal = styled.div`
     display: ${(props) => (props.visible ? 'block' : 'none')};
