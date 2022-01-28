@@ -9,7 +9,7 @@ const RentalSearch = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [rentalData, setRentalData] = useState([]);
-    const [currentData, setCurrentData] = useState({});
+    const [currentData, setCurrentData] = useState(null);   // {}로 지정하면 undefined 에러 -> null로 초기값
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -28,6 +28,10 @@ const RentalSearch = () => {
     useEffect(() => {
         searchRental();
     }, [startDate, endDate]);
+
+    // useEffect(() => {
+    //     setCurrentData(rentalData[0])
+    // }, [rentalData])
 
     const searchRental = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
@@ -109,8 +113,10 @@ const RentalSearch = () => {
                 <ModalWrapper visible={modalVisible} onClick={(e) => {modalClose(e)}} >
                 <ModalInner tabIndex="0" className="modal-inner">
                     <div className='container-fluid'>
+                        {currentData != null ? 
                         <div className='col'>
                             <div className='row'>
+                                {/* null에 replace 불가 */}
                                 <p>계약일 : {currentData.rt_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3')}</p>
                                 <p className='p ml-3'>행사일 : {currentData.rt_rdate.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3')}</p>
                             </div>
@@ -138,7 +144,7 @@ const RentalSearch = () => {
                                 <p>{currentData.rt_bigo2}</p>
                                 <p>{currentData.rt_bigo3}</p>
                             </div>
-                        </div>
+                        </div> : <p></p>}
                     </div>
                 </ModalInner>
                 </ModalWrapper>
