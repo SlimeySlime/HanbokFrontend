@@ -30,20 +30,23 @@ class App extends Component {
                 <Link className='HeaderContainer-Link nav-link active' to='/Search'>전체 검색</Link>
               </li>
               <li class="nav-item">
-                <Link className='HeaderContainer-Link nav-link' to='/Hanbok'>한복 검색</Link>
+                <Link className='HeaderContainer-Link nav-link active' to='/Hanbok'>한복 검색</Link>
               </li>
               <li class="nav-item">
                 <Link className='HeaderContainer-Link nav-link active' to='/WeekList'>WeekList</Link>
               </li>
+              <li class="nav-item">
+                <Link className='HeaderContainer-Link nav-link active' to='/WeekList2'>WeekList2</Link>
+              </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-expanded="false">대여관리</a>
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">대여관리</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown03">
                   <Link className='HeaderContainer-Link dropdown-item' to='/RentalSearch'>대여조회</Link>
                   <Link className='HeaderContainer-Link dropdown-item' to='/Rental'>대여관리</Link>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-expanded="false">금전출납</a>
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">금전출납</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown03">
                   <Link className='HeaderContainer-Link dropdown-item' to='/PaymentSetting'>지출분류관리</Link>
                   <Link className='HeaderContainer-Link dropdown-item' to='/Payment'>경비조회</Link>

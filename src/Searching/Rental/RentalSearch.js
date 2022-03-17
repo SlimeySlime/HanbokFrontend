@@ -10,6 +10,7 @@ const RentalSearch = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [rentalData, setRentalData] = useState([]);
     const [currentData, setCurrentData] = useState(null);   // {}로 지정하면 undefined 에러 -> null로 초기값
+    const [rentalKeyword, setRentalKeyword] = useState('');
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -29,10 +30,6 @@ const RentalSearch = () => {
         searchRental();
     }, [startDate, endDate]);
 
-    // useEffect(() => {
-    //     setCurrentData(rentalData[0])
-    // }, [rentalData])
-
     const searchRental = () => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
@@ -42,6 +39,7 @@ const RentalSearch = () => {
             params :{
                 startDate: startDateStr,
                 endDate: endDateStr,
+                keyword: rentalKeyword
             }
         })
         .then((result) => {
@@ -101,10 +99,12 @@ const RentalSearch = () => {
                 </div>
                 <div className='form-group col-2-sm ml-3'>
                     <small className='form-label' htmlFor="searchKeyword">검색 키워드</small>
-                    <input className='form-control ' type="text" name="searchKeyword" />
+                    <input className='form-control' type="text" name="searchKeyword"
+                        onChange={(e) => {setRentalKeyword(e.target.value)}}
+                        onKeyPress={() => {searchRental()}} />
                 </div>
                 {/* 조악한 버튼위치 */}
-                <button className='btn btn-primary m-3 mb-5' onClick={() => {}}>검색</button>
+                <button className='btn btn-primary m-3 mb-5' onClick={() => {searchRental()}}>검색</button>
             </div>
             {/* <RentalModal modalVisible={modalVisible}>
             </RentalModal> */}

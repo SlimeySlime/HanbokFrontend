@@ -5,17 +5,21 @@ import styled from 'styled-components';
 import {Swiper, SwiperSlide, navigation, freeMode} from 'swiper/react';
 import SwiperCore, {FreeMode, Navigation} from 'swiper'
 import 'swiper/css';
-import { maxWidth } from '@mui/system';
+import WeekListModal from './WeekListModal'
 
 SwiperCore.use([FreeMode, Navigation])
 
 // saved branch
-const WeekList = () => {
+const WeekList2 = () => {
     
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    // const [nextWeekDate, setNextWeekDate] = useState();
+
     const [weekListItems, setWeekListItems] = useState([]);
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [weekListItemsNext, setWeekListItemsNext] = useState([]);
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
@@ -50,20 +54,11 @@ const WeekList = () => {
             }
         }).then((res) => {
             console.log(res)
-            setWeekListItems(res.data);
+            setWeekListItems(res.data[0]);
+            setWeekListItemsNext(res.data[1]);
         })
     }
 
-    const updateIndex = (index) => {
-        if (index < 0) {
-            index = 0;
-        }else if (index >= 3) {
-            index = 2
-        }
-        console.log(`set Index to ${index}`);
-        setActiveIndex(index);
-
-    }
     const datePick = (e) => {
         let pick = e.target.value
         if (e.target.id === 'startDate') {
@@ -71,7 +66,6 @@ const WeekList = () => {
         }else if (e.target.id === 'endDate') {
             setEndDate(new Date(pick))
         }
-
     }
 
     const changeWeek = (keyword) => {
@@ -86,6 +80,19 @@ const WeekList = () => {
         // ToDo - 현재에서 -+7이 아니라, 무조건 7일되도록
     }
 
+    // 모달 오픈 + currentData
+    const modalOpen = (rentalInfo) => {
+        console.log('clicked ', rentalInfo);
+        // setCurrentData(rentalInfo)
+        setModalVisible(true);
+    }
+
+    const modalClose = (e) => {
+        // 회색부분 클릭시 닫기
+        if (e.currentTarget === e.target) {
+            setModalVisible(false);
+        }
+    }
     return(
         <div className='p-3 mt-1 row'>
             <div className='col-5-sm ml-5'>
@@ -107,7 +114,21 @@ const WeekList = () => {
         
                 </div>
             </div>
-            
+            {/* weeklist 팝업 */}
+            {/* {modalOpen ? <WeekListModal /> : ''} */}
+            <div>
+                {modalVisible ? 
+                <ModalWrapper visible={modalVisible} onClick={(e) => {modalClose(e)}} >
+                <ModalInner tabIndex="0" className="modal-inner">
+                    <div className='container-fluid'>
+                        <div>
+                            모달모달
+                        </div> 
+                    </div>
+                </ModalInner>
+                </ModalWrapper> : ''}
+            </div>
+
             <Swiper
                 navigation
                 spaceBetween={20}
@@ -125,7 +146,7 @@ const WeekList = () => {
                         {weekListItems.filter((item, index) => 
                             item.gs_position === 'A'
                         ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
+                            <p onClick={() => setModalVisible(true)}>
                                 {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
                             </p>
                         )}
@@ -233,13 +254,53 @@ const CarouselItem = styled.div`
     display: inline-block;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 
 `
-
-const Indicator = styled.div`
-    display: flex;
-    justify-content: center;
-    
+const Modal = styled.div`
+    display: ${(props) => (props.visible ? 'block' : 'none')};
 `
 
-export default WeekList;
+// display: ${(props) => (props.visible ? 'block' : 'none')};
+const ModalWrapper = styled.div`
+    box-sizing: border-box;
+    position: fixed;
+    display: ${(props) => (props.visible ? 'block' : 'none')};
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    overflow: auto;
+    outline: 0;
+`
+
+const ModalOverlay = styled.div`
+    box-sizing: border-box;
+    display: ${(props) => (props.visible ? 'block' : 'none')};
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+`
+
+const ModalInner = styled.div`
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+    border-radius: 10px;
+    width: 360px;
+    max-width: 480px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 auto;
+    padding: 40px 20px;
+    z-index: 50;
+  
+`
+
+export default WeekList2;
