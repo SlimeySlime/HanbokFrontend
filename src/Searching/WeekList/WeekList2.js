@@ -16,8 +16,10 @@ const WeekList2 = () => {
     const [endDate, setEndDate] = useState(new Date());
     // const [nextWeekDate, setNextWeekDate] = useState();
 
+    const [goodsData, setGoodsData] = useState([]);
     const [weekListItems, setWeekListItems] = useState([]);
     const [weekListItemsNext, setWeekListItemsNext] = useState([]);
+    const [weekListMap, setWeekListMap] = useState([]);
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -30,6 +32,19 @@ const WeekList2 = () => {
         setStartDate(weekStart);
         const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
         setEndDate(weekEnd);
+
+        // 수량용 goodsInfo 
+        axios.get(searchPath + '/hanbok')
+        .then((res) => {
+
+            // setGoodsData(res.data);
+            const goods = {}
+            res.data.filter((item) => {
+                goods[item.gs_name] = item
+            })
+            console.log('goods Data',goods)
+            setGoodsData(goods)
+        })
     }, [])
 
     // [startDate, endDate] 가 변경되면 searchWeek() 호출;
@@ -53,9 +68,33 @@ const WeekList2 = () => {
                 nextWeekDate: nextWeekStr,
             }
         }).then((res) => {
-            console.log(res)
+            // console.log(res)
             setWeekListItems(res.data[0]);
             setWeekListItemsNext(res.data[1]);
+            // setWeekListMap(res.data[0])
+
+            let weekItems = res.data[0];
+            const hanbokMap = new Map()    // new Map()
+            weekItems.filter((item) => {
+                if (item.gs_name in hanbokMap) {
+                    // console.log(`${item.gs_name} is aleardy`)
+                    hanbokMap[item.gs_name].count += 1;
+                }else{
+                    hanbokMap[item.gs_name] = item
+                    if (item.gs_name in goodsData) {
+                        hanbokMap[item.gs_name].stock = goodsData[item.gs_name].gs_jgquant
+                    }
+                    hanbokMap[item.gs_name].count = 1
+                }
+            })
+            // console.log('hanbok map : ', hanbokMap)
+            // 꼭 이렇게 array -> map -> array 변환을 해야할까? 흐음
+            const hanbokMapArray = []
+            for(const weekItem in hanbokMap){
+                hanbokMapArray.push(hanbokMap[weekItem])
+            }
+            console.log('hanbok map array', hanbokMapArray)
+            setWeekListMap(hanbokMapArray)
         })
     }
 
@@ -143,11 +182,11 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>A 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item) => 
                             item.gs_position === 'A'
-                        ).map((item, index) => 
+                        ).map((item, key) => 
                             <p onClick={() => setModalVisible(true)}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                                {key + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                             </p>
                         )}
                     </CarouselItem>
@@ -155,11 +194,11 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>B 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'B'
                         ).map((item, index) => 
                         <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                         </p>
                         )}
                     </CarouselItem>
@@ -167,11 +206,11 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>C 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'C'
                         ).map((item, index) => 
                         <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                         </p>
                         )}
                     </CarouselItem>
@@ -179,11 +218,11 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>D 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'D'
                         ).map((item, index) => 
                         <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                         </p>
                         )}
                     </CarouselItem>
@@ -191,11 +230,11 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>E 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'E'
                         ).map((item, index) => 
                         <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                         </p>
                         )}
                     </CarouselItem>
@@ -203,27 +242,27 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>F1 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'F1'
                         ).map((item, index) => 
                             <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                             </p>
                         )}
                         <p className='text-center my-2'><b>F2 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'F2'
                         ).map((item, index) => 
                             <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} {item.rt_Gubun != '대여'? item.rt_Gubun : ''}
+                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                             </p>
                         )}
                         <p className='text-center my-2'><b>F3 구역</b></p>
-                        {weekListItems.filter((item, index) => 
+                        {weekListMap.filter((item, index) => 
                             item.gs_position === 'F3'
                         ).map((item, index) => 
                             <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name}
+                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
                             </p>
                         )}
                     </CarouselItem>
