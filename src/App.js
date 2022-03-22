@@ -52,6 +52,9 @@ class App extends Component {
                   <Link className='HeaderContainer-Link dropdown-item' to='/Payment'>경비조회</Link>
                 </ul>
               </li>
+              <li className='nav-item'> 
+                <Link className='HeadContainer-Link nav-link active' to='/HanbokUpload'>한복 업로드</Link>
+              </li>
             </ul>
             {/* <form>
               <input class="form-control" type="text" placeholder="Search" aria-label="Search" />

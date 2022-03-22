@@ -17,26 +17,30 @@ import Native from './Searching/Native';
 import RentalSearch from './Searching/Rental/RentalSearch';
 import Rental from './Searching/Rental/Rental';
 
+import axios from 'axios'
+import MainRoute from './MainRoute';
+
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      {/* <Title /> */}
-      <App />
-      <Routes>
-        <Route path='/' element={ <Search /> }></Route>
-        <Route path='/Search' element={ <Search /> }></Route>
-        <Route path='/Hanbok' element= { <Hanbok /> }></Route>
-        <Route path='/WeekList' element= { <WeekList /> }></Route>
-        <Route path='/WeekList2' element= { <WeekList2 /> }></Route>
-        <Route path='/Native' element= { <Native /> }></Route>
-        <Route path='/Payment' element={<Payment />}></Route>
-        <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
-        <Route path='/Hanbok2' element={<Search2 />}></Route>
-        <Route path='/RentalSearch' element={<RentalSearch />}></Route>
-        <Route path='/Rental' element={<Rental />}></Route>
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  //   <BrowserRouter>
+  //     {/* <Title /> */}
+  //     <App />
+  //     <Routes>
+  //       <Route path='/' element={ <Search /> }></Route>
+  //       <Route path='/Search' element={ <Search /> }></Route>
+  //       <Route path='/Hanbok' element= { <Hanbok /> }></Route>
+  //       <Route path='/WeekList' element= { <WeekList /> }></Route>
+  //       <Route path='/WeekList2' element= { <WeekList2 /> }></Route>
+  //       <Route path='/Native' element= { <Native /> }></Route>
+  //       <Route path='/Payment' element={<Payment />}></Route>
+  //       <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
+  //       <Route path='/Hanbok2' element={<Search2 />}></Route>
+  //       <Route path='/RentalSearch' element={<RentalSearch />}></Route>
+  //       <Route path='/Rental' element={<Rental />}></Route>
+  //     </Routes>
+  //   </BrowserRouter>
+  // </React.StrictMode>,
+  <MainRoute />,
   document.getElementById('root')
 );
 

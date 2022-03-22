@@ -10,7 +10,7 @@ import WeekListModal from './WeekListModal'
 SwiperCore.use([FreeMode, Navigation])
 
 // saved branch
-const WeekList2 = () => {
+const WeekList2 = (props) => {
     
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -34,18 +34,25 @@ const WeekList2 = () => {
         setEndDate(weekEnd);
 
         // 수량용 goodsInfo 
-        axios.get(searchPath + '/hanbok')
-        .then((res) => {
+        getGoodsData();
 
-            // setGoodsData(res.data);
-            const goods = {}
-            res.data.filter((item) => {
-                goods[item.gs_name] = item
-            })
-            console.log('goods Data',goods)
-            setGoodsData(goods)
-        })
+        // setGoodsData(props.goods)
+        // console.log('goods data : props.goods');
     }, [])
+
+    async function getGoodsData(){
+        const goods = {}
+        try{
+            const result = await axios.get(searchPath + '/hanbok')
+            result.data.filter((item) => {
+                return goods[item.gs_name] = item
+            })
+            setGoodsData(goods)
+            console.log("goods data set to await");
+        }catch(e){
+            console.error(e);
+        }
+    }
 
     // [startDate, endDate] 가 변경되면 searchWeek() 호출;
     useEffect(() => {
@@ -71,11 +78,13 @@ const WeekList2 = () => {
             // console.log(res)
             setWeekListItems(res.data[0]);
             setWeekListItemsNext(res.data[1]);
-            // setWeekListMap(res.data[0])
-
-            let weekItems = res.data[0];
-            const hanbokMap = new Map()    // new Map()
-            weekItems.filter((item) => {
+        })
+    }
+    // goodsdata -> weeklist -> weeklistMap 3중 useEffect 흠
+    useEffect(() => {
+        const hanbokMap = new Map()    // new Map()
+            console.log('goods Data', goodsData)
+            weekListItems.filter((item) => {
                 if (item.gs_name in hanbokMap) {
                     // console.log(`${item.gs_name} is aleardy`)
                     hanbokMap[item.gs_name].count += 1;
@@ -83,20 +92,18 @@ const WeekList2 = () => {
                     hanbokMap[item.gs_name] = item
                     if (item.gs_name in goodsData) {
                         hanbokMap[item.gs_name].stock = goodsData[item.gs_name].gs_jgquant
+                        // console.log('stock : jgquant : ', goodsData[item.gs_name].gs_jgquant)
                     }
                     hanbokMap[item.gs_name].count = 1
                 }
             })
-            // console.log('hanbok map : ', hanbokMap)
-            // 꼭 이렇게 array -> map -> array 변환을 해야할까? 흐음
-            const hanbokMapArray = []
-            for(const weekItem in hanbokMap){
-                hanbokMapArray.push(hanbokMap[weekItem])
-            }
-            console.log('hanbok map array', hanbokMapArray)
-            setWeekListMap(hanbokMapArray)
-        })
-    }
+        const hanbokMapArray = []
+        for(const weekItem in hanbokMap){
+            hanbokMapArray.push(hanbokMap[weekItem])
+        }
+        console.log('hanbok map array useEffected', hanbokMapArray)
+        setWeekListMap(hanbokMapArray)
+    }, [weekListItems])
 
     const datePick = (e) => {
         let pick = e.target.value
