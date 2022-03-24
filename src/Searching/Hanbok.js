@@ -11,7 +11,7 @@ const Hanbok = () => {
     const [searchList, setSearchList] = useState([]);
 
     const [currentItem, setCurrentItem] = useState({});
-    const searchPath = process.env.NODE_ENV == 'production' ? '/search' : 'http://localhost:3000/search'
+    const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
     useEffect(() => {
         // searchAll
@@ -23,7 +23,9 @@ const Hanbok = () => {
 
     },[])
 
-    // filter식 검색
+    // imgpath = searchPath = process.env.NODE_ENV === 'production' ? '/img' : 'http://localhost:3000/img'
+
+    // 검색 filter
     const search2 = () => {
         const nameReg = new RegExp(`${name}`, 'gi');
         let searched = hanboks.filter(item => nameReg.test(item.gs_name));
