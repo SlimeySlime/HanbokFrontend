@@ -9,9 +9,12 @@ const Hanbok = () => {
     // const [keyword, setKeyword] = useState( ['' , ''] ) 
     const [hanboks, setHanboks] = useState([]);
     const [searchList, setSearchList] = useState([]);
-
     const [currentItem, setCurrentItem] = useState({});
+    const [currentImage, setCurrentImage] = useState();
+
+
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
+    const imagePath = process.env.NODE_ENV === 'production' ? '/hanbok' : 'http://localhost:3000/hanbok'
 
     useEffect(() => {
         // searchAll
@@ -20,7 +23,6 @@ const Hanbok = () => {
             setHanboks(result.data);
             setSearchList(result.data);
         })
-
     },[])
 
     // imgpath = searchPath = process.env.NODE_ENV === 'production' ? '/img' : 'http://localhost:3000/img'
@@ -35,8 +37,6 @@ const Hanbok = () => {
     }
 
     const search = () => {
-        // name.replace(' ', '')
-        // type.replace(' ', '')
         name.trim()
         type.trim()
         axios.get(searchPath, {     // http://localhost:3000/search -> /search
@@ -52,7 +52,7 @@ const Hanbok = () => {
         })
         setCurrentItem({});
     }
-
+    // 한복 신규 등록
     const posting = (postMethod) => {
 
         axios.post(searchPath, {    // http://localhost:3000/search -> /search
@@ -75,7 +75,7 @@ const Hanbok = () => {
         })
     }
 
-
+    // 수정, 등록에서 키워드 변경
     const setItem = (keyword, item) => {
         // console.log(`item: ${item} , keyword : ${keyword}`);
         if (keyword === 'gs_maker') {
@@ -103,9 +103,24 @@ const Hanbok = () => {
 
     // row onClick 
     const onView = (item) => {
-        // console.log(item);
-        setCurrentItem(item);   // Todo - item 바로 다 넣지 말고, 필요한것만
+        setCurrentItem(item);   
     }
+    // setItem -> getImage
+    useEffect(() => {
+        // 담채/저고리/연두당의
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', imagePath + `/${currentItem.gs_maker}/${currentItem.gs_kind}/${currentItem.gs_name.toString().split(' ')[0]}`)
+        xhr.responseType = 'blob'
+        xhr.send()
+        xhr.onreadystatechange = function(){
+            if (this.readyState === 4 && this.status === 200) {
+                // const url = window.URL || window.webkitURL;
+                const url = window.URL 
+                let imgsrc = url.createObjectURL(this.response)
+                setCurrentImage(imgsrc);
+            }
+        }
+    }, [currentItem])
 
     // 
     const onSort = (e) => {
@@ -158,7 +173,7 @@ const Hanbok = () => {
     return (
     <div className='container-fluid'>
     <div className='row'>
-        <div className='col-lg'>
+        <div className='col-lg-4'>
             <div className='conatiner mt-3'>
                 <form>
                 <div className='row'>
@@ -213,9 +228,11 @@ const Hanbok = () => {
                         <button className='btn btn-info m-2' onClick={() => posting('UPDATE')}>수정하기</button>
                         <button className='btn btn-info m-2' onClick={() => posting('DELETE')}>삭제하기</button>
                     </div>
-                    
                 </div>
 
+            </div>
+            <div>
+                <img src={currentImage} width='100%' alt="hanbokImage" />
             </div>
         </div>
         <div className='col-lg'>

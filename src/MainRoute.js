@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -20,19 +20,22 @@ import HanbokUpload from './Upload/HanbokUpload'
 import axios from 'axios';
 
 const MainRoute = () => {
-    
+
     const [goodsData, setGoodsData] = useState([]);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
-    const goods = {}
-    axios.get(searchPath + '/hanbok')
+
+    useEffect(() => {
+        const goods = {}
+        axios.get(searchPath + '/hanbok')
         .then((result) => {
             const goods = {}
             result.data.filter((item) => {
                 return goods[item.gs_name] = item
             })
             setGoodsData(goods)
-    })
+        })
+    },[])
 
     return(
         <React.StrictMode>

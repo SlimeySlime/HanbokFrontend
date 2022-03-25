@@ -27,24 +27,6 @@ const HanbokUpload = () =>{
     useEffect(() => {
         console.log('imagepath axios')
         getHanbokImage()
-        // axios.get(imagePath, {
-        //     responseType:'blob'
-        // })
-        // .then((result) => {
-        //     console.log(result)
-        //     // console.log('imagepath get')
-        //     const reader = new FileReader()
-        //     reader.readAsBinaryString(result.data)
-        //     reader.onloadend = () => {
-        //         const base = reader.result
-        //         if (base) {
-        //             console.log(base)
-        //             setImageFile(base.toString())
-        //         }
-        //     }
-        //     // setImageFile(result.data)
-        // })
-        // 
     }, [])
 
     const getHanbokImage = () => {
