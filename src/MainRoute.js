@@ -25,17 +25,17 @@ const MainRoute = () => {
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
-    useEffect(() => {
-        const goods = {}
-        axios.get(searchPath + '/hanbok')
-        .then((result) => {
-            const goods = {}
-            result.data.filter((item) => {
-                return goods[item.gs_name] = item
-            })
-            setGoodsData(goods)
-        })
-    },[])
+    // useEffect(() => {
+    //     const goods = {}
+    //     axios.get(searchPath + '/hanbok')
+    //     .then((result) => {
+    //         const goods = {}
+    //         result.data.filter((item) => {
+    //             return goods[item.gs_name] = item
+    //         })
+    //         setGoodsData(goods)
+    //     })
+    // },[])
 
     return(
         <React.StrictMode>

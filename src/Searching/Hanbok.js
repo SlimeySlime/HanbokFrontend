@@ -10,8 +10,8 @@ const Hanbok = () => {
     const [hanboks, setHanboks] = useState([]);
     const [searchList, setSearchList] = useState([]);
     const [currentItem, setCurrentItem] = useState({});
-    const [currentImage, setCurrentImage] = useState();
-
+    const [currentImage, setCurrentImage] = useState(null);
+    const [imageData, setImageData] = useState(null);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
     const imagePath = process.env.NODE_ENV === 'production' ? '/hanbok' : 'http://localhost:3000/hanbok'
@@ -28,7 +28,7 @@ const Hanbok = () => {
     // imgpath = searchPath = process.env.NODE_ENV === 'production' ? '/img' : 'http://localhost:3000/img'
 
     // 검색 filter
-    const search2 = () => {
+    const search = () => {
         const nameReg = new RegExp(`${name}`, 'gi');
         let searched = hanboks.filter(item => nameReg.test(item.gs_name));
         const typeReg = new RegExp(`${type}`, 'gi');
@@ -36,22 +36,6 @@ const Hanbok = () => {
         setSearchList(searched);
     }
 
-    const search = () => {
-        name.trim()
-        type.trim()
-        axios.get(searchPath, {     // http://localhost:3000/search -> /search
-            params: {
-                name,
-                type
-            }
-        }).then((res) =>{
-            setHanboks(res.data);
-        }).then(() => {
-            console.log('axios done');
-            console.log('hanboks', hanboks)
-        })
-        setCurrentItem({});
-    }
     // 한복 신규 등록
     const posting = (postMethod) => {
 
@@ -107,22 +91,52 @@ const Hanbok = () => {
     }
     // setItem -> getImage
     useEffect(() => {
-        // 담채/저고리/연두당의
-        const xhr = new XMLHttpRequest()
-        xhr.open('GET', imagePath + `/${currentItem.gs_maker}/${currentItem.gs_kind}/${currentItem.gs_name.toString().split(' ')[0]}`)
-        xhr.responseType = 'blob'
-        xhr.send()
-        xhr.onreadystatechange = function(){
-            if (this.readyState === 4 && this.status === 200) {
-                // const url = window.URL || window.webkitURL;
-                const url = window.URL 
-                let imgsrc = url.createObjectURL(this.response)
-                setCurrentImage(imgsrc);
+        console.log('currentItem : ',currentItem)
+        if (currentItem.gs_name !== undefined){
+            // 담채/저고리/연두당의
+            const xhr = new XMLHttpRequest()
+            xhr.open('GET', imagePath + `/${currentItem.gs_maker}/${currentItem.gs_kind}/${currentItem.gs_name.toString().split(' ')[0]}`)
+            xhr.responseType = 'blob'
+            xhr.send()
+            xhr.onreadystatechange = function(){
+                if (this.readyState === 4 && this.status === 200) {
+                    // const url = window.URL || window.webkitURL;
+                    const url = window.URL 
+                    let imgsrc = url.createObjectURL(this.response)
+                    setCurrentImage(imgsrc);
+                }else{
+                    setCurrentImage(null);
+                }
             }
         }
     }, [currentItem])
 
-    // 
+    const changeImage = (e) => {
+        // console.log(e.target.files[0])
+        setImageData(e.target.files[0])
+        const reader = new FileReader()
+        reader.readAsDataURL(e.target.files[0])
+        reader.onloadend = () => {
+            const base64 = reader.result
+            if (base64) {
+                setCurrentImage(base64.toString())
+            }
+        }
+    }
+
+    const uploadImage = (e) => {
+        console.log(e)
+        console.log(`upload to ${currentItem.gs_maker}/${currentItem.gs_kind}/${currentItem.gs_name}`)
+        const formData = new FormData()
+        // const xhr = new XMLHttpRequest()
+        formData.append('file', imageData)
+        axios.post(imagePath, imageData)
+        .then((result) => {
+            console.log(result)
+        })
+    }
+
+    // sort
     const onSort = (e) => {
         // console.log('sorting', keyword)
         console.log('sorting', e.target.id);
@@ -161,13 +175,13 @@ const Hanbok = () => {
 
     const enterSearch = (e) => {
         if (e.key === 'Enter') {
-            search2()
+            search()
         }
     }
 
     // 실시간 검색(filter) 
     useEffect(() => {
-        search2();
+        search();
     }, [name, type])
 
     return (
@@ -193,7 +207,7 @@ const Hanbok = () => {
                 </div>
                 </form>
                 {/* <button className='btn btn-primary' onClick={() => search()}>검색</button> */}
-                <button className='btn btn-primary ml-3' onClick={() => search2()}>검색</button>
+                <button className='btn btn-primary ml-3' onClick={() => search()}>검색</button>
             </div>
             
             <div className='container border mt-4 p-3'>
@@ -231,8 +245,15 @@ const Hanbok = () => {
                 </div>
 
             </div>
-            <div>
-                <img src={currentImage} width='100%' alt="hanbokImage" />
+            {/* Hanbok Preview */}
+            <div className='container border mt-2 p-2'>
+                {currentImage !== null ? 
+                <img src={currentImage} width='100%' alt="hanbokImage" /> : ''}
+                <div>
+                    <input className='form-control' type="file" name="upload"
+                        onChange={(e) => {changeImage(e)}}/>
+                    <button className='btn btn-primary m-2' onClick={(e) => {uploadImage(e)}}>서버로 업로드</button>
+                </div>   
             </div>
         </div>
         <div className='col-lg'>

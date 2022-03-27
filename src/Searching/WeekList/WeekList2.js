@@ -10,7 +10,7 @@ import WeekListModal from './WeekListModal'
 SwiperCore.use([FreeMode, Navigation])
 
 // saved branch
-const WeekList2 = (props) => {
+const WeekList2 = () => {
     
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
