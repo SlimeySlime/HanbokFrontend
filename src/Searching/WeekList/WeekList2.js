@@ -10,6 +10,7 @@ import WeekListModal from './WeekListModal'
 SwiperCore.use([FreeMode, Navigation])
 
 // saved branch
+// todo - weeklist 다음주 연속대여 주황색, 2/1 빨간색 (이모도 가능하게끔)
 const WeekList2 = () => {
     
     const [startDate, setStartDate] = useState(new Date());
