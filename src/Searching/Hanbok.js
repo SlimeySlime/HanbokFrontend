@@ -130,7 +130,12 @@ const Hanbok = () => {
         const formData = new FormData()
         // const xhr = new XMLHttpRequest()
         formData.append('file', imageData)
-        axios.post(imagePath, imageData)
+        formData.append('filaName', 'hanboktest')
+        axios.post(imagePath, formData, {
+            headers : {
+                'Content-Type' : 'multipart/form-data',
+            }
+        })
         .then((result) => {
             console.log(result)
         })
@@ -251,13 +256,20 @@ const Hanbok = () => {
                 <div>
                     <img src={currentImage} width='100%' alt="hanbokImage" /> 
                 </div>  
-                :
+                : '' }
                 <div> 
-                    <img src={currentImage} width='100%' alt="hanbokImage" /> 
                     <input className='form-control' type="file" name="upload"
                         onChange={(e) => {changeImage(e)}}/>
                     <button className='btn btn-primary m-2' onClick={(e) => {uploadImage(e)}}>서버로 업로드</button>
-                </div> }
+                </div>
+            </div>
+            <div className='container border mt-2 p-2'>
+                <form action={imagePath} method='post' enctype='multipart/form-data'>
+                    <label htmlFor="">multipart/form-data</label>
+                    <input className='form-control' type="file" name="image"
+                        onChange={(e) => {changeImage(e)}}/>
+                    <button className='btn btn-primary' type="submit">업로드</button>
+                </form>
             </div>
         </div>
         <div className='col-lg'>
