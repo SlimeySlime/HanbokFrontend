@@ -181,7 +181,7 @@ const Payment = () => {
                     </thead>
                         {paymentList.length == 0 && 
                             <tr>
-                                <td>데이터가 없습니다.</td>
+                                <td>데이터가 없습니다..</td>
                             </tr>
                         }
                         {paymentList.map((item, index) =>
