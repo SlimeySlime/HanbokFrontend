@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import {Swiper, SwiperSlide, navigation, freeMode} from 'swiper/react';
 import SwiperCore, {FreeMode, Navigation} from 'swiper'
 import 'swiper/css';
-import WeekListModal from './WeekListModal'
+// import WeekListModal from './WeekListModal'
 
 SwiperCore.use([FreeMode, Navigation])
 
@@ -22,23 +22,22 @@ const WeekList2 = () => {
     const [weekListItemsNext, setWeekListItemsNext] = useState([]);
     const [weekListMap, setWeekListMap] = useState([]);
 
+    const [selectedItems, setSelectedItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
     useEffect(() => {
+        // 1. 이번주 월요일 2. 이번주 일요일
         const now = new Date();
-        const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
-        const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+        const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));  
         setStartDate(weekStart);
+        const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
         const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
         setEndDate(weekEnd);
 
-        // 수량용 goodsInfo 
+        // 수량 데이터용 goodsInfo 
         getGoodsData();
-
-        // setGoodsData(props.goods)
-        // console.log('goods data : props.goods');
     }, [])
 
     async function getGoodsData(){
@@ -49,7 +48,6 @@ const WeekList2 = () => {
                 return goods[item.gs_name] = item
             })
             setGoodsData(goods)
-            console.log("goods data set to await");
         }catch(e){
             console.error(e);
         }
@@ -61,19 +59,24 @@ const WeekList2 = () => {
     }, [startDate, endDate]);
 
     const searchWeek = () => {
-        const nextWeek = new Date(endDate);
-        nextWeek.setDate((nextWeek.getDate() + 7))
-        const nextWeekStr = nextWeek.toISOString().split('T')[0].replace(/-/gi,'');
+        const nextWeekStart = new Date(endDate)
+        nextWeekStart.setDate(nextWeekStart.getDate() + 1)
+        const nextWeekStartStr = nextWeekStart.toISOString().split('T')[0].replace(/-/gi,'');
+
+        const nextWeekEnd = new Date(endDate);
+        nextWeekEnd.setDate((nextWeekEnd.getDate() + 7))
+        const nextWeekEndStr = nextWeekEnd.toISOString().split('T')[0].replace(/-/gi,'');
 
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
         const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
-        console.log(`searching ${startDateStr} ~ ${endDateStr} : ~ ${nextWeekStr}`);
+        console.log(`searching ${startDateStr} ~ ${endDateStr} : ~ ${nextWeekEndStr}`);
 
         axios.get(searchPath + '/week', {
             params: {
                 startDate : startDateStr,
                 endDate: endDateStr,
-                nextWeekDate: nextWeekStr,
+                nextWeekStart: nextWeekStartStr,
+                nextWeekEnd: nextWeekEndStr,
             }
         }).then((res) => {
             // console.log(res)
@@ -82,22 +85,41 @@ const WeekList2 = () => {
         })
     }
     // goodsdata -> weeklist -> weeklistMap 3중 useEffect 흠
+    // HanbokMap에 대여수/재고 추가
     useEffect(() => {
         const hanbokMap = new Map()    // new Map()
-            console.log('goods Data', goodsData)
-            weekListItems.filter((item) => {
-                if (item.gs_name in hanbokMap) {
-                    // console.log(`${item.gs_name} is aleardy`)
-                    hanbokMap[item.gs_name].count += 1;
-                }else{
-                    hanbokMap[item.gs_name] = item
-                    if (item.gs_name in goodsData) {
-                        hanbokMap[item.gs_name].stock = goodsData[item.gs_name].gs_jgquant
-                        // console.log('stock : jgquant : ', goodsData[item.gs_name].gs_jgquant)
-                    }
-                    hanbokMap[item.gs_name].count = 1
+        console.log('goods Data', goodsData)
+        weekListItems.filter((item) => {
+            if (item.gs_name in hanbokMap) {
+                hanbokMap[item.gs_name].count += 1;
+            }else{
+                hanbokMap[item.gs_name] = item
+                if (item.gs_name in goodsData) {
+                    hanbokMap[item.gs_name].stock = goodsData[item.gs_name].gs_jgquant
                 }
-            })
+                hanbokMap[item.gs_name].count = 1
+            }
+        })
+        const hanbokNextMap = new Map()    
+        weekListItemsNext.filter((item) => {
+            hanbokNextMap[item.gs_name] = item
+        })
+
+        console.log('weekItem and next keys \t')
+        console.log(hanbokNextMap.keys)
+        for(const weekItem in hanbokMap){
+            for(const weekItemNext in hanbokNextMap) {
+                if (weekItem === weekItemNext) {
+                    // console.log(`${weekItem} has next ! `)
+                    hanbokMap[weekItem].hasNext = true
+                }
+            }
+        }
+        // console.log('weekItemNext \t')
+        // for(const weekItemNext in hanbokNextMap){
+        //     console.log(weekItemNext)
+        // }
+
         const hanbokMapArray = []
         for(const weekItem in hanbokMap){
             hanbokMapArray.push(hanbokMap[weekItem])
@@ -130,6 +152,19 @@ const WeekList2 = () => {
     // 모달 오픈 + currentData
     const modalOpen = (rentalInfo) => {
         console.log('clicked ', rentalInfo);
+        const currentItems = []
+        weekListItems.filter((item) => {
+            if (item.gs_name === rentalInfo.gs_name){
+                currentItems.push(item)
+            }
+        })
+        weekListItemsNext.filter((item) => {
+            if (item.gs_name === rentalInfo.gs_name){
+                currentItems.push(item)
+            }
+        })
+        console.log(currentItems)
+        setSelectedItems(currentItems)
         // setCurrentData(rentalInfo)
         setModalVisible(true);
     }
@@ -140,6 +175,21 @@ const WeekList2 = () => {
             setModalVisible(false);
         }
     }
+
+    function ItemRow({item, index}){
+        // const item = props.item
+        // const index = props.index
+        return(
+            <p onClick={() => modalOpen(item)}
+                style={{
+                    background : item.hasNext ? '#a4a4a4' : '#a402a4'
+                }}>
+                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
+            </p>
+        )
+
+    }
+
     return(
         <div className='p-3 mt-1 row'>
             <div className='col-5-sm ml-5'>
@@ -168,9 +218,26 @@ const WeekList2 = () => {
                 <ModalWrapper visible={modalVisible} onClick={(e) => {modalClose(e)}} >
                 <ModalInner tabIndex="0" className="modal-inner">
                     <div className='container-fluid'>
-                        <div>
-                            모달모달
-                        </div> 
+                        {/* 이번주 + 다음주리스트 합계.filter -> 각각 row로 map해서 보여줌 */}
+                        <table className='table'>
+                            <thead>
+                                <tr>
+                                    <th>대여일</th>
+                                    <th>이름</th>
+                                    <th>관계</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {selectedItems.map((item) => 
+                                <tr>
+                                    <td>{Date.parse(item.rt_rdate)}</td>
+                                    <td>{item.ct_name}</td>
+                                    <td>{item.rt_ctBigo}</td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+                        
                     </div>
                 </ModalInner>
                 </ModalWrapper> : ''}
@@ -190,12 +257,11 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>A 구역</b></p>
+
                         {weekListMap.filter((item) => 
                             item.gs_position === 'A'
-                        ).map((item, key) => 
-                            <p onClick={() => setModalVisible(true)}>
-                                {key + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                            </p>
+                        ).map((item, index) => 
+                            <ItemRow item={item} index={index} />
                         )}
                     </CarouselItem>
                 </SwiperSlide>
@@ -214,6 +280,7 @@ const WeekList2 = () => {
                 <SwiperSlide>
                     <CarouselItem>
                         <p className='text-center my-2'><b>C 구역</b></p>
+
                         {weekListMap.filter((item, index) => 
                             item.gs_position === 'C'
                         ).map((item, index) => 

@@ -128,13 +128,18 @@ const Hanbok = () => {
         console.log(e)
         console.log(`upload to ${currentItem.gs_maker}/${currentItem.gs_kind}/${currentItem.gs_name}`)
         const formData = new FormData()
-        // const xhr = new XMLHttpRequest()
-        formData.append('file', imageData)
-        formData.append('filaName', 'hanboktest')
+        formData.append('image', imageData)
+        formData.append('hanbokDetail', currentImage.gs_maker)
         axios.post(imagePath, formData, {
             headers : {
-                'Content-Type' : 'multipart/form-data',
-            }
+                ContentType : 'multipart/form-data',
+            },
+            
+            // params : {
+            //     hanbokMaker : currentItem.gs_maker,
+            //     hanbokType : currentImage.gs_kind,
+            //     hanbokName : currentImage.gs_name
+            // },
         })
         .then((result) => {
             console.log(result)
@@ -263,6 +268,7 @@ const Hanbok = () => {
                     <button className='btn btn-primary m-2' onClick={(e) => {uploadImage(e)}}>서버로 업로드</button>
                 </div>
             </div>
+            {/* Post with form */}
             <div className='container border mt-2 p-2'>
                 <form action={imagePath} method='post' enctype='multipart/form-data'>
                     <label htmlFor="">multipart/form-data</label>
