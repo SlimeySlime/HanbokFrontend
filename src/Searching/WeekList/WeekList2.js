@@ -24,6 +24,7 @@ const WeekList2 = () => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [itemColors, setItemColor] = useState({});
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
@@ -105,9 +106,9 @@ const WeekList2 = () => {
             hanbokNextMap[item.gs_name] = item
         })
 
-        console.log('weekItem and next keys \t')
-        console.log(hanbokNextMap.keys)
         for(const weekItem in hanbokMap){
+            if (hanbokMap[weekItem].stock / hanbokMap[weekItem].count)
+
             for(const weekItemNext in hanbokNextMap) {
                 if (weekItem === weekItemNext) {
                     // console.log(`${weekItem} has next ! `)
@@ -179,15 +180,36 @@ const WeekList2 = () => {
     function ItemRow({item, index}){
         // const item = props.item
         // const index = props.index
+        const base = itemColors.baseColor
+        const warning = itemColors.warningColor
+        const delivery = itemColors.deliveryColor
+
         return(
             <p onClick={() => modalOpen(item)}
                 style={{
-                    background : item.hasNext ? '#a4a4a4' : '#a402a4'
+                    color : item.hasNext ? warning : base
                 }}>
-                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
+                {index + 1}. {item.rt_Delivery !== '' ? `택배)` : ''} {item.gs_name} ({item.count}/{item.stock})
             </p>
         )
 
+        // return(
+        //     <p onClick={() => modalOpen(item)}
+        //         style={{
+        //             background : item.hasNext ? '#a4a4a4' : '#a402a4'
+        //         }}>
+        //         {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
+        //     </p>
+        // )
+    }
+
+    function changeColor(color, id) {
+        // base, warning, delivery colors
+        setItemColor({
+            ...itemColors,
+            [id] : color
+
+        })
     }
 
     return(
@@ -210,6 +232,17 @@ const WeekList2 = () => {
                     </div>
         
                 </div>
+                <div className='row'>
+                    <label htmlFor="" className='form-label'>기본색</label>
+                    <input type="color" name="" id="baseColor"   
+                        onChange={(e) => {changeColor(e.target.value, e.target.id)}} />
+                    <label htmlFor="" className='form-label'>강조색</label>
+                    <input type="color" name="" id="warningColor" 
+                        onChange={(e) => {changeColor(e.target.value, e.target.id)}} />
+                    <label htmlFor="" className='form-label'>택배색</label>
+                    <input type="color" name="" id="deliveryColor" 
+                        onChange={(e) => {changeColor(e.target.value, e.target.id)}} />
+                </div>
             </div>
             {/* weeklist 팝업 */}
             {/* {modalOpen ? <WeekListModal /> : ''} */}
@@ -230,7 +263,7 @@ const WeekList2 = () => {
                             <tbody>
                             {selectedItems.map((item) => 
                                 <tr>
-                                    <td>{Date.parse(item.rt_rdate)}</td>
+                                    <td>{item.rt_rdate}</td>
                                     <td>{item.ct_name}</td>
                                     <td>{item.rt_ctBigo}</td>
                                 </tr>
@@ -250,7 +283,7 @@ const WeekList2 = () => {
                 freeMode={
                     {enabled:true, sticky:false}
                 }
-                onSlideChange={() => console.log('page is')}
+                onSlideChange={() => {}}
                 onSwiper={(swiper) => {console.log(swiper)}}
                 style={{maxWidth : '800px'}}
                 >
@@ -360,7 +393,7 @@ const CarouselWrapper = styled.div`
 `
 
 const CarouselItem = styled.div`
-    padding-left: 14px;
+    padding: 14px;
     width: 100%;
     height: 100%;
     background-color: #f3f3f3;
