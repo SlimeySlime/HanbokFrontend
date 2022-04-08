@@ -3,7 +3,7 @@ import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css'
 import styled from 'styled-components';
 import {Swiper, SwiperSlide, navigation, freeMode} from 'swiper/react';
-import SwiperCore, {FreeMode, Navigation} from 'swiper'
+import SwiperCore, {FreeMode, Navigation, Pagination} from 'swiper'
 import 'swiper/css';
 // import WeekListModal from './WeekListModal'
 
@@ -24,7 +24,9 @@ const WeekList2 = () => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [itemColors, setItemColor] = useState({});
+    const [itemColors, setItemColor] = useState({
+        warningColor : '#F96C6C'
+    });
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
@@ -81,16 +83,17 @@ const WeekList2 = () => {
             }
         }).then((res) => {
             // console.log(res)
-            setWeekListItems(res.data[0]);
-            setWeekListItemsNext(res.data[1]);
+            setHanbokMap(res.data[0], res.data[1])
+            // setWeekListItems(res.data[0]);
+            // setWeekListItemsNext(res.data[1]);
         })
     }
     // goodsdata -> weeklist -> weeklistMap 3중 useEffect 흠
     // HanbokMap에 대여수/재고 추가
-    useEffect(() => {
+    function setHanbokMap(thisWeek, nextWeek){
         const hanbokMap = new Map()    // new Map()
-        console.log('goods Data', goodsData)
-        weekListItems.filter((item) => {
+        // item 재고(stock), 대여수량(count)를 map에 추가
+        thisWeek.filter((item) => {
             if (item.gs_name in hanbokMap) {
                 hanbokMap[item.gs_name].count += 1;
             }else{
@@ -101,33 +104,71 @@ const WeekList2 = () => {
                 hanbokMap[item.gs_name].count = 1
             }
         })
+        // 다음주 map
         const hanbokNextMap = new Map()    
-        weekListItemsNext.filter((item) => {
+        nextWeek.filter((item) => {
             hanbokNextMap[item.gs_name] = item
         })
-
+        // hasNext와 warning 추가
         for(const weekItem in hanbokMap){
-            if (hanbokMap[weekItem].stock / hanbokMap[weekItem].count)
-
+            if (hanbokMap[weekItem].stock <= hanbokMap[weekItem].count){
+                hanbokMap[weekItem].warning = true
+            }
+            // 이중 for문으로 검색
             for(const weekItemNext in hanbokNextMap) {
                 if (weekItem === weekItemNext) {
-                    // console.log(`${weekItem} has next ! `)
                     hanbokMap[weekItem].hasNext = true
                 }
             }
         }
-        // console.log('weekItemNext \t')
-        // for(const weekItemNext in hanbokNextMap){
-        //     console.log(weekItemNext)
-        // }
-
+        // filter로 div만들기 좋게 배열로 변환해서 state에 저장
         const hanbokMapArray = []
         for(const weekItem in hanbokMap){
             hanbokMapArray.push(hanbokMap[weekItem])
         }
-        console.log('hanbok map array useEffected', hanbokMapArray)
+        // console.log('hanbokMap', hanbokMap)
+        // console.log('hanbokMap-Array', hanbokMapArray)
         setWeekListMap(hanbokMapArray)
-    }, [weekListItems])
+        setWeekListItems(thisWeek);
+        setWeekListItemsNext(nextWeek);
+    }
+
+    // useEffect(() => {
+    //     const hanbokMap = new Map()    // new Map()
+    //     // item 재고(stock), 대여수량(count)를 map에 추가
+    //     weekListItems.filter((item) => {
+    //         if (item.gs_name in hanbokMap) {
+    //             hanbokMap[item.gs_name].count += 1;
+    //         }else{
+    //             hanbokMap[item.gs_name] = item
+    //             if (item.gs_name in goodsData) {
+    //                 hanbokMap[item.gs_name].stock = goodsData[item.gs_name].gs_jgquant
+    //             }
+    //             hanbokMap[item.gs_name].count = 1
+    //         }
+    //     })
+    //     const hanbokNextMap = new Map()    
+    //     weekListItemsNext.filter((item) => {
+    //         hanbokNextMap[item.gs_name] = item
+    //     })
+
+    //     for(const weekItem in hanbokMap){
+    //         if (hanbokMap[weekItem].stock / hanbokMap[weekItem].count)
+
+    //         for(const weekItemNext in hanbokNextMap) {
+    //             if (weekItem === weekItemNext) {
+    //                 hanbokMap[weekItem].hasNext = true
+    //             }
+    //         }
+    //     }
+
+    //     const hanbokMapArray = []
+    //     for(const weekItem in hanbokMap){
+    //         hanbokMapArray.push(hanbokMap[weekItem])
+    //     }
+    //     console.log('hanbok map array useEffected', hanbokMapArray)
+    //     setWeekListMap(hanbokMapArray)
+    // }, [weekListItems])
 
     const datePick = (e) => {
         let pick = e.target.value
@@ -192,17 +233,7 @@ const WeekList2 = () => {
                 {index + 1}. {item.rt_Delivery !== '' ? `택배)` : ''} {item.gs_name} ({item.count}/{item.stock})
             </p>
         )
-
-        // return(
-        //     <p onClick={() => modalOpen(item)}
-        //         style={{
-        //             background : item.hasNext ? '#a4a4a4' : '#a402a4'
-        //         }}>
-        //         {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-        //     </p>
-        // )
     }
-
     function changeColor(color, id) {
         // base, warning, delivery colors
         setItemColor({
@@ -237,7 +268,8 @@ const WeekList2 = () => {
                     <input type="color" name="" id="baseColor"   
                         onChange={(e) => {changeColor(e.target.value, e.target.id)}} />
                     <label htmlFor="" className='form-label'>강조색</label>
-                    <input type="color" name="" id="warningColor" 
+                    <input type="color" name="" id="warningColor"
+                        value={itemColors.warningColor} 
                         onChange={(e) => {changeColor(e.target.value, e.target.id)}} />
                     <label htmlFor="" className='form-label'>택배색</label>
                     <input type="color" name="" id="deliveryColor" 
@@ -270,112 +302,97 @@ const WeekList2 = () => {
                             )}
                             </tbody>
                         </table>
-                        
                     </div>
                 </ModalInner>
                 </ModalWrapper> : ''}
             </div>
+            <div className='container-fluid px-5'>
+                <Swiper
+                    navigation
+                    spaceBetween={20}
+                    slidesPerView={window.innerWidth >= 800 ? 6 : 2}
+                    freeMode={
+                        {enabled:true, sticky:false}
+                    }
+                    onSlideChange={() => {}}
+                    onSwiper={(swiper) => {console.log(swiper)}}
+                    >
+                    <SwiperSlide>
+                        <CarouselItem>
+                            <p className='text-center my-2'><b>A 구역</b></p>
 
-            <Swiper
-                navigation
-                spaceBetween={20}
-                slidesPerView={2}
-                freeMode={
-                    {enabled:true, sticky:false}
-                }
-                onSlideChange={() => {}}
-                onSwiper={(swiper) => {console.log(swiper)}}
-                style={{maxWidth : '800px'}}
-                >
-                <SwiperSlide>
-                    <CarouselItem>
-                        <p className='text-center my-2'><b>A 구역</b></p>
+                            {weekListMap.filter((item) => 
+                                item.gs_position === 'A'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                        </CarouselItem>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CarouselItem>
+                            <p className='text-center my-2'><b>B 구역</b></p>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'B'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                        </CarouselItem>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CarouselItem>
+                            <p className='text-center my-2'><b>C 구역</b></p>
 
-                        {weekListMap.filter((item) => 
-                            item.gs_position === 'A'
-                        ).map((item, index) => 
-                            <ItemRow item={item} index={index} />
-                        )}
-                    </CarouselItem>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <CarouselItem>
-                        <p className='text-center my-2'><b>B 구역</b></p>
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'B'
-                        ).map((item, index) => 
-                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                        </p>
-                        )}
-                    </CarouselItem>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <CarouselItem>
-                        <p className='text-center my-2'><b>C 구역</b></p>
-
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'C'
-                        ).map((item, index) => 
-                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                        </p>
-                        )}
-                    </CarouselItem>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <CarouselItem>
-                        <p className='text-center my-2'><b>D 구역</b></p>
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'D'
-                        ).map((item, index) => 
-                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                        </p>
-                        )}
-                    </CarouselItem>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <CarouselItem>
-                        <p className='text-center my-2'><b>E 구역</b></p>
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'E'
-                        ).map((item, index) => 
-                        <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                            {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                        </p>
-                        )}
-                    </CarouselItem>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <CarouselItem>
-                        <p className='text-center my-2'><b>F1 구역</b></p>
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'F1'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                            </p>
-                        )}
-                        <p className='text-center my-2'><b>F2 구역</b></p>
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'F2'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                            </p>
-                        )}
-                        <p className='text-center my-2'><b>F3 구역</b></p>
-                        {weekListMap.filter((item, index) => 
-                            item.gs_position === 'F3'
-                        ).map((item, index) => 
-                            <p onClick={() => console.log(item.gs_name, ' clicked')}>
-                                {index + 1}. {item.rt_Delivery !== '' ? `택)` : ''} {item.gs_name} ({item.count}/{item.stock})
-                            </p>
-                        )}
-                    </CarouselItem>
-                </SwiperSlide>
-            </Swiper>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'C'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                        </CarouselItem>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CarouselItem>
+                            <p className='text-center my-2'><b>D 구역</b></p>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'D'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                        </CarouselItem>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CarouselItem>
+                            <p className='text-center my-2'><b>E 구역</b></p>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'E'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                        </CarouselItem>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CarouselItem>
+                            <p className='text-center my-2'><b>F1 구역</b></p>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'F1'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                            <p className='text-center my-2'><b>F2 구역</b></p>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'F2'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                            <p className='text-center my-2'><b>F3 구역</b></p>
+                            {weekListMap.filter((item, index) => 
+                                item.gs_position === 'F3'
+                            ).map((item, index) => 
+                                <ItemRow item={item} index={index} />
+                            )}
+                        </CarouselItem>
+                    </SwiperSlide>
+                </Swiper>
+            </div>
             
         </div>
             
