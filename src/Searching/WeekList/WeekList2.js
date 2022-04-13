@@ -31,16 +31,17 @@ const WeekList2 = () => {
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
     useEffect(() => {
+        // 수량 데이터용 goodsInfo 
+        getGoodsData();
+
         // 1. 이번주 월요일 2. 이번주 일요일
         const now = new Date();
         const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));  
         setStartDate(weekStart);
         const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
         const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
-        setEndDate(weekEnd);
+        setEndDate(weekEnd)
 
-        // 수량 데이터용 goodsInfo 
-        getGoodsData();
     }, [])
 
     async function getGoodsData(){
@@ -59,9 +60,9 @@ const WeekList2 = () => {
     // [startDate, endDate] 가 변경되면 searchWeek() 호출;
     useEffect(() => {
         searchWeek();
-    }, [startDate, endDate]);
+    }, [startDate, endDate, goodsData]);
 
-    const searchWeek = () => {
+    const searchWeek = (start = startDate, end = endDate) => {
         const nextWeekStart = new Date(endDate)
         nextWeekStart.setDate(nextWeekStart.getDate() + 1)
         const nextWeekStartStr = nextWeekStart.toISOString().split('T')[0].replace(/-/gi,'');
@@ -82,13 +83,10 @@ const WeekList2 = () => {
                 nextWeekEnd: nextWeekEndStr,
             }
         }).then((res) => {
-            // console.log(res)
             setHanbokMap(res.data[0], res.data[1])
-            // setWeekListItems(res.data[0]);
-            // setWeekListItemsNext(res.data[1]);
         })
     }
-    // goodsdata -> weeklist -> weeklistMap 3중 useEffect 흠
+
     // HanbokMap에 대여수/재고 추가
     function setHanbokMap(thisWeek, nextWeek){
         const hanbokMap = new Map()    // new Map()
@@ -126,49 +124,11 @@ const WeekList2 = () => {
         for(const weekItem in hanbokMap){
             hanbokMapArray.push(hanbokMap[weekItem])
         }
-        // console.log('hanbokMap', hanbokMap)
-        // console.log('hanbokMap-Array', hanbokMapArray)
+
         setWeekListMap(hanbokMapArray)
         setWeekListItems(thisWeek);
         setWeekListItemsNext(nextWeek);
     }
-
-    // useEffect(() => {
-    //     const hanbokMap = new Map()    // new Map()
-    //     // item 재고(stock), 대여수량(count)를 map에 추가
-    //     weekListItems.filter((item) => {
-    //         if (item.gs_name in hanbokMap) {
-    //             hanbokMap[item.gs_name].count += 1;
-    //         }else{
-    //             hanbokMap[item.gs_name] = item
-    //             if (item.gs_name in goodsData) {
-    //                 hanbokMap[item.gs_name].stock = goodsData[item.gs_name].gs_jgquant
-    //             }
-    //             hanbokMap[item.gs_name].count = 1
-    //         }
-    //     })
-    //     const hanbokNextMap = new Map()    
-    //     weekListItemsNext.filter((item) => {
-    //         hanbokNextMap[item.gs_name] = item
-    //     })
-
-    //     for(const weekItem in hanbokMap){
-    //         if (hanbokMap[weekItem].stock / hanbokMap[weekItem].count)
-
-    //         for(const weekItemNext in hanbokNextMap) {
-    //             if (weekItem === weekItemNext) {
-    //                 hanbokMap[weekItem].hasNext = true
-    //             }
-    //         }
-    //     }
-
-    //     const hanbokMapArray = []
-    //     for(const weekItem in hanbokMap){
-    //         hanbokMapArray.push(hanbokMap[weekItem])
-    //     }
-    //     console.log('hanbok map array useEffected', hanbokMapArray)
-    //     setWeekListMap(hanbokMapArray)
-    // }, [weekListItems])
 
     const datePick = (e) => {
         let pick = e.target.value

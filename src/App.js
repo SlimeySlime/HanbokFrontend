@@ -1,6 +1,5 @@
 import './App.css';
 import logo from './bdan.svg';
-import styled from 'styled-components';
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom'
 

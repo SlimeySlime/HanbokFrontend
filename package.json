@@ -20,6 +20,7 @@
     "react-flickity-component": "^3.6.2",
     "react-icons": "^4.3.1",
     "react-native": "^0.67.1",
+    "react-native-splash-screen": "^3.3.0",
     "react-native-web": "^0.17.5",
     "react-router-dom": "^6.0.2",
     "react-scripts": "^5.0.0",

@@ -134,6 +134,11 @@ const Hanbok = () => {
             headers : {
                 ContentType : 'multipart/form-data',
             },
+            params : {
+                maker : currentItem.gs_maker,
+                type : currentItem.gs_kind,
+                name : currentItem.gs_name
+            }
             
             // params : {
             //     hanbokMaker : currentItem.gs_maker,
