@@ -1,12 +1,10 @@
 import React from "react";
 import axios from 'axios';
 import { useState, useEffect } from "react";
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+// import DatePicker from 'react-datepicker'
+// import 'react-datepicker/dist/react-datepicker.css'
 import AutoComplete from '@mui/material/Autocomplete';
 import TextField from "@mui/material/TextField";
-
-
 
 const Payment = () => {
     
@@ -31,18 +29,17 @@ const Payment = () => {
         const endDateStr = new Date().toISOString().split('T')[0].replace(/-/gi,'');
         setEndDate(new Date());
 
+        console.log(startDateStr, endDateStr);
         getPaymentList(startDateStr, endDateStr);   // 중복코드를 메소드로
+
 
         // 자동완성에 사용할 type, name 리스트
         axios.get(paymentPath)
         .then((result) => {
-            // console.log('type result, ', result.data[0]);
-            // setPaymentType(result.data[0]);
             setPaymentType(result.data[0].map(value => ({...value, label : value.sj_gubun, id : value.sj_count})));
-            // setPaymentName(result.data[1]);
             setPaymentName(result.data[1].map(value => ({...value, label : value.sj_name, id : value.sj_count})));
         })
-    },[])
+    }, [])
 
     const getPaymentList = (start, end) => {
         const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
@@ -50,8 +47,6 @@ const Payment = () => {
         // console.log(` searching ${startDateStr} ~ ${endDateStr} -> ${searchKeywords.payType}, ${searchKeywords.payName} ,${searchKeywords.payInfo}`);
         axios.get(searchPath, {
             params: {
-                // startDate: startDateStr,
-                // endDate: endDateStr,
                 startDate: start != null ? start : startDateStr,
                 endDate: end != null ? end : endDateStr,
                 payType: searchKeywords.payType === null ? '' : searchKeywords.payType,
@@ -69,17 +64,32 @@ const Payment = () => {
         if (keyword.length > 0) {
             const regex = new RegExp(`${keyword}`, 'gi');
             const suggest = paymentType.filter( item => regex.test(item.sj_gubun));
-
-            console.log('type :', paymentType);
-            console.log('suggest : ', suggest);
             setSuggestList(suggest);
         }else{
             setSuggestList([]);
         }
+    }
+
+    function changeDate(keyword, value) {
+        switch(keyword){
+            case 'start':
+                setStartDate(new Date(value))
+                break
+            case 'end':
+                setEndDate(new Date(value))
+                break
+            default:
+                break
+        }
+        setStartDate(new Date(value))
 
     }
 
-    const setSearchKeyword = (keyword, value) => {    // setKeyword 와 setKeywords
+    function changeMonth(keyword, value) {
+
+    }
+
+    const setKeyword = (keyword, value) => {    // setKeyword 와 setKeywords
         if (value !== null) {
             value = value.label;
         }
@@ -104,7 +114,7 @@ const Payment = () => {
                 break;
         }
 
-        console.log('searchKeywords : ', searchKeywords);
+        console.log(`keywrod ${keyword} : ${value}`);
 
     }
 
@@ -114,52 +124,45 @@ const Payment = () => {
                 <div className="col-2"> 
                     <div className='col'>
                         <small className='form-text text-muted'>시작 날짜</small>   
-                        <DatePicker
-                            selected={startDate}
-                            onChange={(e) => {setStartDate(e); getPaymentList();}}
-                            selectsStart={endDate}
-                            startDate={startDate}
-                            endDate={endDate}
-                        />
+                        <input className="form-control" type="date" 
+                            value={startDate.toISOString().split('T')[0]}
+                            onChange={(e) => {changeDate('start', e.target.value)}} />
+                        <button className="btn btn-primary">◀ 이전달 </button>
                     </div>
                     <div className='col'>
                         <small className='form-text text-muted'>마감 날짜</small>
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(e) => {setEndDate(e); getPaymentList();}}
-                            selectsEnd={endDate}
-                            startDate={startDate}
-                            endDate={endDate}
-                        />                        
+                        <input className="form-control" type="date" 
+                            value={endDate.toISOString().split('T')[0]}
+                            onChange={(e) => {changeDate('end', e.target.value)}} />
                     </div>
                 </div>
-                
+
                 <div className="col-2">
-                    {/* <small className='form-text text-muted'>계정 과목</small>
-                    <input type="text" name="payType" id="payType" onChange={(e) => {onKeywordChange(e.target.value)}}/> */}
-                    <AutoComplete 
-                        id='combo-box'
-                        options={paymentType}
-                        onChange={(e, value) => {setSearchKeyword("payType", value)}}
-                        renderInput={(params) => <TextField {...params} label='계정과목' />}
-                    />
+                    <small className='form-text text-muted'>계정 과목</small>
+                    <input className="form-control" placeholder="과목" list="payTypeList" id="payType" 
+                        onChange={(e) => {setKeyword(e.target.id ,e.target.value)}}/>
+                    <datalist id="payTypeList">
+                        {paymentType.map((item, index) =>
+                            <option value={item.sj_gubun} key={item.sj_count}></option>
+                        )}
+                    </datalist>
                 </div>    
                 <div className="col-2">
-                    {/* <small className='form-text text-muted'>계정명</small> */}
+                    <small className='form-text text-muted'>계정명</small>
                     {/* <input type="text" name="payName" id="payType" onChange={(e) => {setSearchKeyword(e.target.name, e.target.value)}}/>    */}
-                    <AutoComplete 
-                        disablePoral 
-                        id='combo-box'
-                        onChange={(e, value) => {setSearchKeyword("payName", value)}}
-                        options={paymentName}
-                        renderInput={(params) => <TextField {...params} label='계정명' />}
-                    />
+                    <input className="form-control" placeholder="계정" list="payNameList" id="payName" 
+                        onChange={(e) => {setKeyword(e.target.id ,e.target.value)}}/>
+                    <datalist id="payNameList">
+                        {paymentName.map((item, index) =>
+                            <option value={item.sj_name}></option>
+                        )}
+                    </datalist>
                 </div>    
                 <div className="col-2">
                     {/* <small className='form-text text-muted'>내용</small>
                     <input type="text" name="payInfo" id="payType" onChange={(e) => {setSearchKeyword(e.target.name, e.target.value)}}/>                     */}
                     
-                    <TextField label='내용' onChange={(e, value) => {setSearchKeyword("payInfo", value)}}/>
+                    <TextField label='내용' onChange={(e, value) => {setKeyword("payInfo", value)}}/>
                 </div>    
                 <div className="col-1">
                     <button className="btn btn-primary" onClick={ () => {getPaymentList()}} >검색</button>
@@ -179,7 +182,7 @@ const Payment = () => {
                             <th scope="row">출금액</th>
                         </tr>
                     </thead>
-                        {paymentList.length == 0 && 
+                        {paymentList.length === 0 && 
                             <tr>
                                 <td>데이터가 없습니다..</td>
                             </tr>

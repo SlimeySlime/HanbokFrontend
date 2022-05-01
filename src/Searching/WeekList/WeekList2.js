@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import 'react-datepicker/dist/react-datepicker.css'
 import styled from 'styled-components';
 import {Swiper, SwiperSlide, navigation, freeMode} from 'swiper/react';
 import SwiperCore, {FreeMode, Navigation, Pagination} from 'swiper'
@@ -204,7 +203,10 @@ const WeekList2 = () => {
     }
 
     return(
-        <div className='p-3 mt-1 row'>
+        <div className='p-2 mt-1 row'>
+            
+            <div className='font-bold'>test test tes</div>
+
             <div className='col-5-sm ml-5'>
                 <div className='row'>
                     <div className='form-group col'>
@@ -266,7 +268,7 @@ const WeekList2 = () => {
                 </ModalInner>
                 </ModalWrapper> : ''}
             </div>
-            <div className='container-fluid px-5'>
+            <div className='container-fluid px-3'>
                 <Swiper
                     navigation
                     spaceBetween={20}

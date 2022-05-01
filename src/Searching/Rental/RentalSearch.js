@@ -86,13 +86,13 @@ const RentalSearch = () => {
         <div className='col mt-4'>
             <div className='row'>
                 <div className='form-group col-2-sm ml-3'>
-                    <input type="date" name="startDate" id="startDate" 
+                    <input className='form-control' type="date" name="startDate" id="startDate" 
                     onChange={(e) => {datePick(e)}} value={startDate.toISOString().split('T')[0]} />
                     <small className='form-text text-muted'>시작 날짜</small>
                     <button className='btn btn-primary'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
                 </div>
                 <div className='form-group col-2-sm ml-3'>
-                    <input type="date" name="endDate" id="endDate"
+                    <input className='form-control' type="date" name="endDate" id="endDate"
                     onChange={(e) => {datePick(e)}} value={endDate.toISOString().split('T')[0]} />
                     <small className='form-text text-muted'>마감 날짜</small>
                     <button className='btn btn-primary' onClick={() => {changeWeek('Next')}}>다음주 </button>
