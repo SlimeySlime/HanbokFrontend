@@ -1,8 +1,6 @@
 import React from "react";
 import axios from 'axios';
 import { useState, useEffect } from "react";
-// import AutoComplete from '@mui/material/Autocomplete';
-// import TextField from "@mui/material/TextField";
 import styled from "styled-components";
 
 const Payment = () => {
