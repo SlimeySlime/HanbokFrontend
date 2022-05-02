@@ -1,12 +1,8 @@
 import React from "react";
 import axios from 'axios';
 import { useState, useEffect } from "react";
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import AutoComplete from '@mui/material/Autocomplete';
-import TextField from "@mui/material/TextField";
-
-
+// import AutoComplete from '@mui/material/Autocomplete';
+// import TextField from "@mui/material/TextField";
 
 const Payment = () => {
     
@@ -114,52 +110,36 @@ const Payment = () => {
                 <div className="col-2"> 
                     <div className='col'>
                         <small className='form-text text-muted'>시작 날짜</small>   
-                        <DatePicker
+                        <input type="date" name="" id="" />
+                        {/* <DatePicker
                             selected={startDate}
                             onChange={(e) => {setStartDate(e); getPaymentList();}}
                             selectsStart={endDate}
                             startDate={startDate}
                             endDate={endDate}
-                        />
+                        /> */}
                     </div>
                     <div className='col'>
                         <small className='form-text text-muted'>마감 날짜</small>
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(e) => {setEndDate(e); getPaymentList();}}
-                            selectsEnd={endDate}
-                            startDate={startDate}
-                            endDate={endDate}
-                        />                        
+                        <input type="date" name="" id="" />                       
                     </div>
                 </div>
                 
                 <div className="col-2">
                     {/* <small className='form-text text-muted'>계정 과목</small>
                     <input type="text" name="payType" id="payType" onChange={(e) => {onKeywordChange(e.target.value)}}/> */}
-                    <AutoComplete 
-                        id='combo-box'
-                        options={paymentType}
-                        onChange={(e, value) => {setSearchKeyword("payType", value)}}
-                        renderInput={(params) => <TextField {...params} label='계정과목' />}
-                    />
+                    <input type="text" />
                 </div>    
                 <div className="col-2">
                     {/* <small className='form-text text-muted'>계정명</small> */}
                     {/* <input type="text" name="payName" id="payType" onChange={(e) => {setSearchKeyword(e.target.name, e.target.value)}}/>    */}
-                    <AutoComplete 
-                        disablePoral 
-                        id='combo-box'
-                        onChange={(e, value) => {setSearchKeyword("payName", value)}}
-                        options={paymentName}
-                        renderInput={(params) => <TextField {...params} label='계정명' />}
-                    />
+                    <input type="text" />
                 </div>    
                 <div className="col-2">
                     {/* <small className='form-text text-muted'>내용</small>
                     <input type="text" name="payInfo" id="payType" onChange={(e) => {setSearchKeyword(e.target.name, e.target.value)}}/>                     */}
                     
-                    <TextField label='내용' onChange={(e, value) => {setSearchKeyword("payInfo", value)}}/>
+                    <input type="text" />
                 </div>    
                 <div className="col-1">
                     <button className="btn btn-primary" onClick={ () => {getPaymentList()}} >검색</button>

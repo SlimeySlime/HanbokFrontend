@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 // import style from './WeekList.module.css';
 // import Flickity from 'react-flickity-component';
 import styled from 'styled-components';
 import {Swiper, SwiperSlide, navigation, freeMode} from 'swiper/react';
 import SwiperCore, {FreeMode, Navigation} from 'swiper'
-import 'swiper/css';
-import { maxWidth } from '@mui/system';
 
 SwiperCore.use([FreeMode, Navigation])
 

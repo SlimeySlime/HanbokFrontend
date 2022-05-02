@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 // import styled from './WeekList.module.css';
 import styled from 'styled-components';
 import { useRef } from 'react';
