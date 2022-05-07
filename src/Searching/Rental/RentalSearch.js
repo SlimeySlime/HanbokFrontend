@@ -10,20 +10,18 @@ const RentalSearch = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [rentalData, setRentalData] = useState([]);
     const [currentData, setCurrentData] = useState(null);   // {}로 지정하면 undefined 에러 -> null로 초기값
-    const [rentalKeyword, setRentalKeyword] = useState('');
 
+    const [rentalKeyword, setRentalKeyword] = useState('');
+    const [searchlAll, setSearchAll] = useState(false);
+    // 키워드는 1. 변경될때마다 현재 데이터리스트 필터링 ★
+    // 2. 검색버튼을 누르면 axios에 파라미터로 전달
     const [modalVisible, setModalVisible] = useState(false);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
 
     // 이번주 불러오기
     useEffect(() => {
-        const now = new Date();
-        const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
-        const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
-        setStartDate(weekStart);
-        const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
-        setEndDate(weekEnd);
+        currentWeek()
     }, [])
 
     useEffect(() => {
@@ -31,15 +29,16 @@ const RentalSearch = () => {
     }, [startDate, endDate]);
 
     const searchRental = () => {
-        const startDateStr = startDate.toISOString().split('T')[0].replace(/-/gi,'');
-        const endDateStr = endDate.toISOString().split('T')[0].replace(/-/gi,'');
+        const startDateStr = startDate?.toISOString().split('T')[0].replace(/-/gi,'');
+        const endDateStr = endDate?.toISOString().split('T')[0].replace(/-/gi,'');
         console.log(`searching ${startDateStr} ~ ${endDateStr}`);
 
         axios.get(searchPath + '/rental', {
             params :{
                 startDate: startDateStr,
                 endDate: endDateStr,
-                keyword: rentalKeyword
+                keyword: rentalKeyword,
+                searchAll : searchlAll,
             }
         })
         .then((result) => {
@@ -67,6 +66,14 @@ const RentalSearch = () => {
         }
         // ToDo - 현재에서 -+7이 아니라, 무조건 7일되도록
     }
+    const currentWeek = () => {
+        const now = new Date();
+        const now2 = new Date();    // Todo - 다른 우아한 방법이 있을까?
+        const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+        setStartDate(weekStart);
+        const weekEnd = new Date(now2.setDate(now2.getDate() - now2.getDay() + 7));
+        setEndDate(weekEnd);
+    }
     // 모달 오픈 + currentData
     const modalOpen = (rentalInfo) => {
         console.log('clicked ', rentalInfo);
@@ -81,21 +88,39 @@ const RentalSearch = () => {
         }
     }
 
+    function setRange(keyword) {
+        if (keyword === 'All') {
+            setSearchAll(true)
+            setStartDate(undefined)
+            setEndDate(undefined)
+        }else {
+            currentWeek()
+            setSearchAll(false)
+        }
+    }
+
     return (
     <div>
         <div className='col mt-4'>
             <div className='row'>
                 <div className='form-group col-2-sm ml-3'>
                     <input className='form-control' type="date" name="startDate" id="startDate" 
-                    onChange={(e) => {datePick(e)}} value={startDate.toISOString().split('T')[0]} />
+                    onChange={(e) => {datePick(e)}} value={startDate?.toISOString().split('T')[0]} />
                     <small className='form-text text-muted'>시작 날짜</small>
-                    <button className='btn btn-primary'  onClick={() => {changeWeek('Prev')}}>저번주 </button>
+                    <button className='btn btn-primary'  onClick={() => {changeWeek('Prev')}}>◀ 저번주 </button>
                 </div>
                 <div className='form-group col-2-sm ml-3'>
                     <input className='form-control' type="date" name="endDate" id="endDate"
-                    onChange={(e) => {datePick(e)}} value={endDate.toISOString().split('T')[0]} />
+                    onChange={(e) => {datePick(e)}} value={endDate?.toISOString().split('T')[0]} />
                     <small className='form-text text-muted'>마감 날짜</small>
-                    <button className='btn btn-primary' onClick={() => {changeWeek('Next')}}>다음주 </button>
+                    <button className='btn btn-primary' onClick={() => {changeWeek('Next')}}>다음주 ▶</button>
+                </div>
+                {/* 전체 or 이번주 */}
+                <div className='form-group col-2-sm'>
+                    <button className='btn btn-primary ml-2' 
+                        onClick={() => {setRange('All')}}>전체기간 검색</button>
+                    <button className='btn btn-primary ml-2'
+                        onClick={() => {setRange('ThisWeek')}}>이번주 검색</button>
                 </div>
                 <div className='form-group col-2-sm ml-3'>
                     <small className='form-label' htmlFor="searchKeyword">검색 키워드</small>

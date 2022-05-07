@@ -10,7 +10,7 @@ SwiperCore.use([FreeMode, Navigation])
 
 // saved branch
 // todo - weeklist 다음주 연속대여 주황색, 2/1 빨간색 (이모도 가능하게끔)
-const WeekList2 = () => {
+const WeekListTail = () => {
     
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -207,12 +207,12 @@ const WeekList2 = () => {
             <div className='col-5-sm ml-5'>
                 <div className='row'>
                     <div className='form-group col'>
-                        <input type="date" name="startDate" id="startDate" className='form-control' 
+                        <input type="date" name="startDate" id="startDate" 
                         onChange={(e) => {datePick(e)}} value={startDate.toISOString().split('T')[0]} />
                         <small className='form-text text-muted'>시작 날짜</small>
                     </div>
                     <div className='form-group col'>
-                        <input type="date" name="endDate" id="endDate" className='form-control' 
+                        <input type="date" name="endDate" id="endDate"
                          onChange={(e) => {datePick(e)}} value={endDate.toISOString().split('T')[0]} />
                         <small className='form-text text-muted'>마감 날짜</small>
                     </div>
@@ -426,4 +426,4 @@ const ModalInner = styled.div`
   
 `
 
-export default WeekList2;
+export default WeekListTail;

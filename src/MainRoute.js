@@ -12,6 +12,7 @@ import Title from './Title'
 import Native from './Searching/Native';
 import RentalSearch from './Searching/Rental/RentalSearch';
 import Rental from './Searching/Rental/Rental';
+import WeekListTail from './Searching/WeekList/WeekListTail';
 
 const MainRoute = () => {
 
@@ -32,6 +33,7 @@ const MainRoute = () => {
                 <Route path='/Rental' element={<Rental />}></Route>
                 <Route path='/RentalSearch' element={<RentalSearch />}></Route>
                 <Route path='/WeekList2' element= { <WeekList2 goods={goodsData}/> }></Route>
+                <Route path='/WeekListTail' element= { <WeekListTail/> }></Route>
                 <Route path='/Payment' element={<Payment />}></Route>
                 <Route path='/PaymentSetting' element={<PaymentSetting />}></Route>
                 {/* <Route path='/HanbokUpload' element={<HanbokUpload/>}></Route> */}

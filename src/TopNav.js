@@ -35,6 +35,9 @@ class App extends Component {
               <li class="nav-item">
                 <Link className='HeaderContainer-Link nav-link active' to='/WeekList2'>WeekList</Link>
               </li>
+              <li class="nav-item">
+                <Link className='HeaderContainer-Link nav-link active' to='/WeekListTail'>WeekListTail</Link>
+              </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">대여관리</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown03">
