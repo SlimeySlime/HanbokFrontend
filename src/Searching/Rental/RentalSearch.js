@@ -15,6 +15,7 @@ const RentalSearch = () => {
     const [searchlAll, setSearchAll] = useState(false);
     // 키워드는 1. 변경될때마다 현재 데이터리스트 필터링 ★
     // 2. 검색버튼을 누르면 axios에 파라미터로 전달
+    const [filtered, setFiltered] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
 
     const searchPath = process.env.NODE_ENV === 'production' ? '/search' : 'http://localhost:3000/search'
@@ -42,10 +43,16 @@ const RentalSearch = () => {
             }
         })
         .then((result) => {
-            console.log(result);
+            // console.log(result);
             setRentalData(result.data);
         })
     }
+    // useState(() => {
+    //     rentalData.filter((item) => {
+
+    //     }) 
+    // }, [rentalData])    
+
     // 날짜 선택 및 이번, 다음 주
     const datePick = (e) => {
         let pick = e.target.value
@@ -98,6 +105,34 @@ const RentalSearch = () => {
             setSearchAll(false)
         }
     }
+    // sort
+    const onSort = (e) => {
+        // console.log('sorting', e.target.id);
+        const current = [...rentalData] // deepcopy
+        let sorted = [...rentalData] 
+        if (e.target.id === 'type') {
+            sorted.sort((a, b) => {
+                return a.rt_Gubun?.localeCompare(b.rt_Gubun)
+            });
+        }else if (e.target.id === 'name') {
+            sorted.sort((a, b) => {
+                return a.ct_name.localeCompare(b.ct_name)
+            });
+        }else if (e.target.id === 'ctDate') {
+            sorted.sort((a, b) => {
+                return a.rt_date.localeCompare(b.rt_date)
+            });
+        }else if (e.target.id === 'rtDate') {
+            sorted.sort((a, b) => {
+                return a.rt_rdate.localeCompare(b.rt_rdate)
+            });
+        }
+        // 다시한번 누르면 역정렬
+        if (current[0] === sorted[0]){ 
+            sorted = sorted.reverse()
+        }
+        setRentalData(sorted)
+    }
 
     return (
     <div>
@@ -107,7 +142,7 @@ const RentalSearch = () => {
                     <input className='form-control' type="date" name="startDate" id="startDate" 
                     onChange={(e) => {datePick(e)}} value={startDate?.toISOString().split('T')[0]} />
                     <small className='form-text text-muted'>시작 날짜</small>
-                    <button className='btn btn-primary'  onClick={() => {changeWeek('Prev')}}>◀ 저번주 </button>
+                    <button className='btn btn-primary'  onClick={() => {changeWeek('Prev')}}>◀ 이전주 </button>
                 </div>
                 <div className='form-group col-2-sm ml-3'>
                     <input className='form-control' type="date" name="endDate" id="endDate"
@@ -133,6 +168,9 @@ const RentalSearch = () => {
             </div>
             {/* <RentalModal modalVisible={modalVisible}>
             </RentalModal> */}
+            <div>
+                <label className='label' htmlFor="합계">대여 {rentalData.length} 건</label>
+            </div>
             <div>
                 <ModalOverlay visible={modalVisible}/>
                 <ModalWrapper visible={modalVisible} onClick={(e) => {modalClose(e)}} >
@@ -187,7 +225,7 @@ const RentalSearch = () => {
                 <tbody>
                     {rentalData.map((item) => 
                         <tr onClick={() => {modalOpen(item)}}>
-                            <td>{item.rt_Gubun}</td>
+                            <td>{item.rt_Delivery ? '택배) ' : ''}{item.rt_Gubun}</td>
                             <td>{item.rt_rdate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}</td>
                             <td>{item.ct_name}</td>
                             <td>{item.rt_ctBigo}</td>
@@ -199,10 +237,10 @@ const RentalSearch = () => {
             <DetailTable className='table table-hover'>
                 <thead>
                     <tr>
-                        <th>구분 </th>
-                        <th>계약일</th>
-                        <th>출고일</th>
-                        <th>고객명</th>
+                        <th onClick={(e) => {onSort(e)}} id='type'>구분 </th>
+                        <th onClick={(e) => {onSort(e)}} id='ctDate'>계약일</th>
+                        <th onClick={(e) => {onSort(e)}} id='rtDate'>출고일</th>
+                        <th onClick={(e) => {onSort(e)}} id='name'>고객명</th>
                         <th>관계</th>
                         <th>상품명</th>    
                         <th>금액</th>

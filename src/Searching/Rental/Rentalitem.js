@@ -11,7 +11,7 @@ const Rentalitem = ({info, modalOpen}) => {
     return(
         // item -> info (이름만)
         <tr onClick={() => modalOpen(info)}>
-            <td>{info.rt_Gubun}</td>
+            <td>{info.rt_Delivery ? '택) ' : ''}{info.rt_Gubun}</td>
             <td>{info.rt_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}</td>
             <td>{info.rt_rdate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}</td>
             <td>{info.ct_name}</td>
